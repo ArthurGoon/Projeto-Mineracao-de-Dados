@@ -255,22 +255,12 @@ A pasta `compile/` contem o PDF final da proposta para referencia.
 |---|---|---|
 | Formacao dos grupos | 14/04 | Concluido |
 | Sorteio dos temas | 16/04 | Concluido |
-| Envio da proposta | 30/04 | Concluido |
+| Envio da proposta | 30/04 | Pendente |
 | Devolutiva e aprovacao | 08/05 | Pendente |
 | Entrega do relatorio e codigo | 25/06 | Em desenvolvimento |
 | Inicio dos seminarios | 02/07 | Pendente |
 
 ---
 
-## Uso de Ferramentas de Inteligencia Artificial
-
-O uso de assistentes generativos de IA e permitido como ferramenta de apoio ao aprendizado. Este projeto utilizou IA para:
-- Depuracao de codigo Python
-- Estruturacao de pipelines de modelagem
-- Revisao textual da interpretacao.md
-
-Os alunos sao integralmente responsaveis por qualquer erro tecnico, metodologico ou conceitual.
-
----
 
 *Sao Carlos -- SP, 2025.*
