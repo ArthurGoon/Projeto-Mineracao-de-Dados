@@ -1,0 +1,89 @@
+\documentclass[10pt,a4paper]{article}
+
+% Codificação e fontes vetoriais (sem serrilhado)
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% Layout da página
+\usepackage[margin=1.8cm,top=1.4cm,bottom=1.4cm]{geometry}
+\usepackage{setspace}
+\setstretch{1.0}
+\setlength{\parindent}{1cm}
+\setlength{\parskip}{0pt}
+
+% Hiperlinks
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,filecolor=black,urlcolor=blue,citecolor=black}
+\usepackage{url}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\footnotesize Universidade Federal de São Carlos -- Departamento de Estatística -- Mineração de Dados}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\thispagestyle{fancy}
+
+\begin{center}
+{\Large \textbf{Universidade Federal de São Carlos (UFSCar)}}\\[0.1cm]
+{\large \textbf{Departamento de Estatística}}\\[0.15cm]
+{\large \textsc{Mineração de Dados}}\\[0.3cm]
+\rule{\textwidth}{0.8pt}\\[0.15cm]
+{\LARGE \textbf{Proposta de Projeto}}\\[0.1cm]
+{\large \textbf{Projeto Mineração -- Grupo 5}}\\[0.2cm]
+\rule{\textwidth}{0.8pt}
+\end{center}
+
+\vspace{0.1cm}
+
+\noindent\textbf{Integrantes:}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Nome} & \textbf{RA} \\
+\hline
+Arthur Pereira Gon & 811464 \\
+Giovanni Roberti & 811676 \\
+Igor Figueiredo & 791420 \\
+Lucas Yukio & 813650 \\
+Murilo Cassiavilani & 812067 \\
+\hline
+\end{tabular}
+\end{center}
+
+\section*{Tema e Modalidade}
+
+\textbf{Tema sorteado:} 5 -- Interpretabilidade de Modelos. \textbf{Modalidade:} A -- Projeto aplicado de mineração de dados.
+
+\section*{Visão Geral}
+
+O projeto propõe um estudo abrangente de interpretabilidade aplicado aos principais paradigmas de modelagem da disciplina. O grupo desenvolverá aplicações em cada área sorteada aos demais grupos (regressão, classificação, agrupamento, mineração de textos e detecção de anomalias), utilizando métodos específicos de interpretação para comparar resultados e explicar por que os modelos predizem o que predizem.
+
+\section*{Estrutura por Paradigma}
+
+Para cada paradigma, serão ajustados modelos representativos e aplicadas técnicas de interpretabilidade adequadas:
+
+\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parsep}{0pt}
+    \item \textbf{Regressão:} Modelos lineares regularizados (Ridge, Lasso) e árvores (Random Forest, XGBoost). Interpretação via coeficientes, PDP e SHAP para quantificar contribuições das preditoras nas predições quantitativas.
+    \item \textbf{Classificação:} Regressão Logística com Lasso, Random Forest e XGBoost. Uso de coeficientes regularizados, importância por permutação, PDP e SHAP para decompor predições e interpretar efeitos sobre probabilidades de classe.
+    \item \textbf{Agrupamento:} K-Means e agrupamento hierárquico. Interpretação dos perfis pela análise das variáveis que mais caracterizam cada grupo, permitindo segmentação acionável.
+    \item \textbf{Mineração de Textos:} Modelagem de tópicos (LDA) e classificação de documentos. Interpretação por inspeção das palavras mais relevantes por tópico e análise de contribuições de termos nas predições.
+    \item \textbf{Detecção de Anomalias:} Isolation Forest e LOF. Interpretação das anomalias via identificação das variáveis que mais se desviam do perfil médio, com explicações locais.
+\end{enumerate}
+
+\section*{Base de Dados}
+
+As bases serão selecionadas de repositórios públicos (UCI, Kaggle) de forma a cobrir cada paradigma. A escolha definitiva será submetida à aprovação do professor, garantindo variáveis interpretáveis em cada domínio.
+
+\section*{Implementação}
+
+Desenvolvimento em R com \texttt{tidymodels} (modelagem), \texttt{DALEX} e \texttt{fastshap} (interpretabilidade), \texttt{tidytext} (textos) e \texttt{dbscan}/\texttt{isolationForest} (anomalias). Código entregue como \textit{notebook} reprodutível.
+
+\end{document}
