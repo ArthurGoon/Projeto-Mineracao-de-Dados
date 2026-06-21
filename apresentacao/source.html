@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interpretabilidade de Modelos: Regressão NBA — Grupo 5</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/slides.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+    <!-- Cinematic background video loop -->
+    <div class="bg-video-container">
+        <video autoplay loop muted playsinline id="bgVideo">
+            <source src="assets/grok-video-39b77359-8f5b-4680-a080-ce5c86bd859f.mp4" type="video/mp4">
+        </video>
+        <div class="bg-video-fallback-gradient"></div>
+        <div class="bg-video-vignette"></div>
+        <div class="bg-video-grain"></div>
+    </div>
+
+    <!-- Progress Tracker -->
+    <div class="nav-header">
+        <div class="nav-progress" id="progressBar"></div>
+    </div>
+
+    <!-- Fixed Header Branding -->
+    <div class="fixed-logo">
+        <span>GRUPO 5</span> | Mineração de Dados
+    </div>
+
+    <button type="button" class="fullscreen-btn" id="fullscreenBtn" aria-label="Entrar em tela cheia" title="Tela cheia">
+        <svg class="fullscreen-icon fullscreen-icon-enter" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg class="fullscreen-icon fullscreen-icon-exit" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 14h6m0 0v6m0-6L3 21M20 10h-6m0 0V4m0 6l7-7M14 4h6m-6 0v6M4 20v-6m0 6h6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <!-- Scroll Chapter Navigator -->
+    <nav class="scroll-rail" id="scrollRail" aria-label="Navegação da apresentação"></nav>
+
+    <!-- Scrollytelling Wrapper -->
+    <div class="scrolly-wrapper">
+        
+        <!-- Left Narrative Column (Scrolls) -->
+        <div class="narrative-col" id="narrativeCol">
+            
+            <!-- Step 0: Arena Cover -->
+            <section class="step active" data-step="0">
+                <div class="step-label">Abertura</div>
+                <h1 class="step-title">Predição de Salários NBA & <span>Interpretabilidade</span></h1>
+                <p class="step-desc">
+                    Como determinar o valor de mercado de um atleta usando apenas estatísticas de jogo? 
+                    Este projeto explora o pipeline de regressão para salários da temporada 2022-23 da NBA, com foco em <strong>auditoria metodológica</strong> e desmistificação dos modelos de <strong>caixa-preta</strong>.
+                </p>
+                <div class="narrative-alert purple">
+                    <div class="alert-title">Grupo 5 — UFSCar (Data Mining)</div>
+                    Prof. Dr. Helton Graziadei
+                </div>
+            </section>
+
+            <!-- Step 1: EDA — Distribuição Salarial e Outliers -->
+            <section class="step" data-step="1">
+                <div class="step-label">Análise de Dados (EDA)</div>
+                <h2 class="step-title">Assimetria e os <span>Outliers</span></h2>
+                <p class="step-desc">
+                    O dataset inicial exibe uma assimetria salarial massiva: a maioria dos jogadores recebe o piso e poucos ganham salários astronômicos.
+                </p>
+                <ul class="step-list">
+                    <li>Contratos abaixo de US$ 500 mil distorcem estatisticamente o MAPE.</li>
+                    <li>Identificamos 38 jogadores com contratos G-League/Two-Way temporários.</li>
+                    <li><strong>Decisão:</strong> Filtramos a base removendo salários inferiores a US$ 500 mil.</li>
+                </ul>
+            </section>
+
+            <!-- Step 2: EDA — Salário por Posição -->
+            <section class="step" data-step="2">
+                <div class="step-label">Análise de Dados (EDA)</div>
+                <h2 class="step-title">Salários por <span>Posição</span></h2>
+                <p class="step-desc">
+                    As posições na quadra de basquete têm dinâmicas econômicas distintas. Armadores (PG) representam, em média, o maior investimento da liga.
+                </p>
+                <ul class="step-list">
+                    <li><strong>Point Guards (PG):</strong> Média salarial de US$ 13,1M.</li>
+                    <li><strong>Power Forwards (PF):</strong> Média de US$ 9,7M.</li>
+                    <li><strong>Centers (C):</strong> Salários médios estabilizados em US$ 7,5M.</li>
+                </ul>
+            </section>
+
+            <!-- Step 3: EDA — Salário vs Idade (Parábola) -->
+            <section class="step" data-step="3">
+                <div class="step-label">Análise de Dados (EDA)</div>
+                <h2 class="step-title">A Curva de <span>Envelhecimento</span></h2>
+                <p class="step-desc">
+                    O valor de um jogador não escala infinitamente com a idade. A relação é curvilínea (parabólica):
+                </p>
+                <ul class="step-list">
+                    <li>O pico salarial de carreira estabiliza entre os 28 e 30 anos.</li>
+                    <li>Jogadores muito jovens (Rookies) ou veteranos seniores recebem menos.</li>
+                    <li>Essa dinâmica curvilínea exige a inclusão do termo quadrático <span class="math-token">Age²</span>.</li>
+                </ul>
+            </section>
+
+            <!-- Step 4: EDA — Matriz de Correlação -->
+            <section class="step" data-step="4">
+                <div class="step-label">Análise de Dados (EDA)</div>
+                <h2 class="step-title">Conexões <span>Catastróficas</span></h2>
+                <p class="step-desc">
+                    A análise de correlação expõe uma armadilha crítica: variáveis redundantes (multicolinearidade).
+                </p>
+                <ul class="step-list">
+                    <li>Correlação de 0.90 entre eficiência (BPM) e produtividade (PER).</li>
+                    <li>Alta correlação entre minutos jogados (MP) e volume de pontos (PTS).</li>
+                    <li>Estimar um modelo linear bruto com essas variáveis gera variância inflacionada.</li>
+                </ul>
+            </section>
+
+            <!-- Step 5: Hardening — VIF & Centering -->
+            <section class="step" data-step="5">
+                <div class="step-label">Hardening do Pipeline</div>
+                <h2 class="step-title">Derrubando o <span>VIF</span></h2>
+                <p class="step-desc">
+                    Para blindar o modelo contra colinearidade, removemos variáveis redundantes (PER, WS, TS%) e aplicamos <strong>centralização polinomial</strong> em <span class="math-token">Age²</span>:
+                </p>
+                <ul class="step-list">
+                    <li>Centralizamos a Idade ao quadrado subtraindo a média da idade (25.9 anos).</li>
+                    <li>O VIF da idade desabou de <strong>246,0 para 9,2</strong>.</li>
+                    <li>O VIF máximo do dataset caiu de <strong>419,0 para 13,8</strong>.</li>
+                </ul>
+            </section>
+
+            <!-- Step 6: Modelos & Resultados -->
+            <section class="step" data-step="6">
+                <div class="step-label">Modelagem & Performance</div>
+                <h2 class="step-title">Métricas e o <span>Teto Preditivo</span></h2>
+                <p class="step-desc">
+                    Avaliamos cinco algoritmos de regressão. O modelo <strong>HistGradientBoosting (HGB)</strong> obteve o melhor equilíbrio de teste:
+                </p>
+                <ul class="step-list">
+                    <li>R² de teste estabilizado em <strong>0,559</strong> e MAPE de <strong>52,18%</strong>.</li>
+                    <li>Modelos puramente de box-score encontram aí seu limite prático.</li>
+                    <li>Fatores de mercado, tamanho do mercado da cidade e histórico de lesões explicam os 48% restantes da variância.</li>
+                </ul>
+            </section>
+
+            <!-- Step 7: OLS Coefficients -->
+            <section class="step" data-step="7">
+                <div class="step-label">Interpretabilidade Paramétrica</div>
+                <h2 class="step-title">Três Leituras do <span>Mesmo Sinal</span></h2>
+                <p class="step-desc">
+                    OLS, Ridge e Lasso concordam no essencial: <strong>minutos (MP)</strong> e <strong>idade</strong> dominam o salário. Mas cada regularização conta uma história diferente sobre colinearidade e parcimônia.
+                </p>
+                <ul class="step-list">
+                    <li><strong>OLS:</strong> coeficientes crus — revela inversões de sinal (PTS/GP negativo).</li>
+                    <li><strong>Ridge (L2):</strong> encolhe coeficientes sem zerar variáveis — mais estável com VIF alto.</li>
+                    <li><strong>Lasso (L1):</strong> seleciona variáveis — confirma MP como preditor dominante.</li>
+                    <li>Use a aba <em>Comparativo</em> para ver o consenso entre os três modelos lineares.</li>
+                </ul>
+            </section>
+
+            <!-- Step 8: Permutation Importance -->
+            <section class="step" data-step="8">
+                <div class="step-label">Interpretabilidade Não-Paramétrica</div>
+                <h2 class="step-title">Do Linear ao <span>Gradient Boosting</span></h2>
+                <p class="step-desc">
+                    Testamos cinco modelos — cada um com sua ferramenta de interpretação. Nos lineares: coeficientes. No <strong>HistGradientBoosting</strong> (melhor performance): permutation importance e SHAP.
+                </p>
+                <ul class="step-list">
+                    <li><strong>Random Forest:</strong> importância por impureza de nó (menos confiável que permutation).</li>
+                    <li><strong>HGB — Permutation:</strong> MP responde por 45,2% da importância; Age por 26,2%.</li>
+                    <li>MP + Age explicam <strong>~71%</strong> da variabilidade salarial no melhor modelo.</li>
+                    <li>O painel à direita resume qual método usamos em cada algoritmo.</li>
+                </ul>
+            </section>
+
+            <!-- Step 9: SHAP -->
+            <section class="step" data-step="9">
+                <div class="step-label">O Ouro do SHAP</div>
+                <h2 class="step-title">Forças Aditivas e <span>Individuais</span></h2>
+                <p class="step-desc">
+                    Depois dos coeficientes lineares (OLS/Ridge/Lasso) e da permutation importance, o <strong>SHAP no HGB</strong> decompõe cada previsão como soma de contribuições marginais:
+                </p>
+                <ul class="step-list">
+                    <li><strong>Stephen Curry:</strong> Superstar com minutos e posses empurrando a previsão para o topo (US$ 42,0M).</li>
+                    <li><strong>Frank Kaminsky:</strong> Role player de baixa minutagem, com forças negativas puxando o salário para US$ 2,0M.</li>
+                    <li><strong>Jaden Hardy:</strong> Novato em contrato restrito (Rookie Scale), com a pouca idade limitando o salário previsto.</li>
+                </ul>
+            </section>
+
+            <!-- Step 10: Maiores Erros -->
+            <section class="step" data-step="10">
+                <div class="step-label">Análise de Erros</div>
+                <h2 class="step-title">Decisões de <span>Front-Office</span></h2>
+                <p class="step-desc">
+                    O modelo erra feio ao prever salários de veteranos de peso que sofreram lesões graves:
+                </p>
+                <ul class="step-list">
+                    <li><strong>Kemba Walker:</strong> Contrato de US$ 37,3M, mas jogou apenas 9 partidas devido ao joelho.</li>
+                    <li><strong>Jonathan Isaac:</strong> Salário de US$ 17,4M, mas jogou apenas 11 jogos devido a LCA.</li>
+                    <li>Estes erros indicam "contratos tóxicos" e não falhas matemáticas do modelo.</li>
+                </ul>
+            </section>
+
+            <!-- Step 11: Onde Acerta e Onde Erra -->
+            <section class="step" data-step="11">
+                <div class="step-label">Diagnóstico do Modelo</div>
+                <h2 class="step-title">Onde Ele Acerta, Onde Ele <span>Quebra</span></h2>
+                <p class="step-desc">
+                    Em vez de porcentagens abstratas, medimos o <strong>desvio absoluto médio em dólares</strong> (MAE) por perfil de jogador no conjunto de teste do HistGradientBoosting.
+                </p>
+                <ul class="step-list">
+                    <li><strong>Role players:</strong> desvio médio de ~US$ 1,2M — salário alinhado à produção.</li>
+                    <li><strong>Rookies (CBA):</strong> ~US$ 1,4M — o modelo entende a escala, mas não o potencial futuro.</li>
+                    <li><strong>Superstars:</strong> ~US$ 5,8M — marca pessoal e legado fogem do box-score.</li>
+                    <li><strong>Lesionados / supermax:</strong> US$ 11–15M de desvio — contratos herdados do passado.</li>
+                    <li>Linha tracejada = MAE global do modelo (US$ 3,68M).</li>
+                </ul>
+            </section>
+
+            <!-- Step 12: Limitações -->
+            <section class="step" data-step="12">
+                <div class="step-label">Limitações do Dataset</div>
+                <h2 class="step-title">Por que Existe um <span>Teto</span></h2>
+                <p class="step-desc">
+                    O teto preditivo não é falta de rigor. Segundo a literatura de economia do esporte, salários dependem também de mercado, reputação e estrutura contratual, não só de box-score.
+                </p>
+                <ul class="step-list">
+                    <li><strong>Berri & Schmidt (2006):</strong> estatísticas explicam parte do valor, mas não todo o mercado.</li>
+                    <li><strong>Mondello & Maxcy (2014):</strong> performance do time e contexto econômico afetam salários.</li>
+                    <li><strong>Lundberg & Lee (2017):</strong> SHAP ajuda a explicar previsões individuais sem fingir causalidade.</li>
+                </ul>
+            </section>
+
+            <!-- Step 13: Fechamento -->
+            <section class="step" data-step="13">
+                <div class="step-label">Mensagem Final</div>
+                <h2 class="step-title">O Modelo Erra, mas <span>Ensina</span></h2>
+                <p class="step-desc">
+                    O resultado central do seminário é metodológico: prever salário é difícil, mas interpretar o erro revela como a NBA precifica performance, risco e decisões passadas.
+                </p>
+                <ul class="step-list">
+                    <li>VIF catastrófico foi diagnosticado e controlado com engenharia estatística.</li>
+                    <li>SHAP e permutation importance são mais confiáveis que coeficientes crus para interpretação.</li>
+                    <li>Os maiores erros contam uma história de front-office, não de falha matemática.</li>
+                </ul>
+            </section>
+
+            <!-- Step 14: Referências -->
+            <section class="step" data-step="14">
+                <div class="step-label">Referências</div>
+                <h2 class="step-title">Base Teórica do <span>Argumento</span></h2>
+                <p class="step-desc">
+                    A apresentação não vende uma métrica isolada: ela conecta preparação estatística, economia do esporte e interpretabilidade moderna.
+                </p>
+                <ul class="step-list">
+                    <li>Berri & Schmidt (2006) e Mondello & Maxcy (2014) sustentam o teto preditivo em salários esportivos.</li>
+                    <li>Kutner et al. (2004), Hoerl & Kennard (1970) e Tibshirani (1996) sustentam VIF, Ridge e Lasso.</li>
+                    <li>Lundberg & Lee (2017) sustenta a leitura individual via SHAP.</li>
+                </ul>
+            </section>
+
+            <!-- Step 15: Obrigado -->
+            <section class="step" data-step="15">
+                <div class="step-label">Encerramento</div>
+                <h2 class="step-title">Obrigado</h2>
+                <p class="step-desc">
+                    Grupo 5 — Mineração de Dados. Predição de salários NBA com auditoria, modelagem e interpretabilidade.
+                </p>
+                <div class="narrative-alert purple">
+                    <div class="alert-title">Pergunta para discussão</div>
+                    Se adicionássemos histórico de lesão, All-Star, draft e tipo de contrato, quanto do erro desapareceria?
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Right Sticky Visual Column (Fixed) -->
+        <div class="visual-col">
+            <div class="visual-container">
+
+                <!-- Panel 0: Cover Visual -->
+                <div class="visual-panel active" data-panel="0">
+                    <div class="panel-title"><span>#</span> PROJETO SALÁRIOS NBA</div>
+                    <div class="cover-visual-wrap">
+                        <div class="neon-court">
+                            <div class="neon-court-circle"></div>
+                            <!-- Particles generated via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel 1: EDA - Histogram -->
+                <div class="visual-panel" data-panel="1">
+                    <div class="panel-title"><span>#</span> EDA: ASSIMETRIA E OUTLIERS (467 JOGADORES)</div>
+                    <div class="chart-note">Faixas salariais do dataset completo 2022-23. Vermelho = contratos Two-Way/G-League removidos (&lt;US$ 500 mil).</div>
+                    <div class="metric-row">
+                        <div class="metric-card glass-panel">
+                            <div class="num" style="color: var(--accent-purple);">467</div>
+                            <div class="lbl">Total Jogadores</div>
+                        </div>
+                        <div class="metric-card glass-panel">
+                            <div class="num" style="color: var(--accent-rose);">-38</div>
+                            <div class="lbl">Outliers (&lt;US$ 500 mil)</div>
+                        </div>
+                        <div class="metric-card glass-panel">
+                            <div class="num" style="color: var(--accent-teal);">429</div>
+                            <div class="lbl">Base Limpa</div>
+                        </div>
+                    </div>
+                    <div style="flex: 1; position: relative;">
+                        <svg class="svg-canvas" id="histogramSvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 2: EDA - Position Salaries -->
+                <div class="visual-panel" data-panel="2">
+                    <div class="panel-title"><span>#</span> EDA: MÉDIA SALARIAL POR POSIÇÃO</div>
+                    <div style="flex: 1; position: relative;">
+                        <svg class="svg-canvas" id="positionSvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 3: EDA - Age vs Salary Scatter -->
+                <div class="visual-panel" data-panel="3">
+                    <div class="panel-title"><span>#</span> EDA: IDADE VS SALÁRIO REAL</div>
+                    <div style="flex: 1; position: relative;">
+                        <svg class="svg-canvas" id="ageSalarySvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 4: EDA - Correlation Heatmap -->
+                <div class="visual-panel" data-panel="4">
+                    <div class="panel-title"><span>#</span> EDA: MATRIZ DE CORRELAÇÃO DE VARS</div>
+                    <div style="flex: 1; position: relative;">
+                        <svg class="svg-canvas" id="heatmapSvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 5: VIF Before/After -->
+                <div class="visual-panel" data-panel="5">
+                    <div class="panel-title"><span>#</span> VIF: BLINDAGEM DE MULTICOLINEARIDADE</div>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
+                        <button class="profile-tab-btn active" id="vifBeforeBtn">Antes do Ajuste</button>
+                        <button class="profile-tab-btn" id="vifAfterBtn">Depois do Ajuste</button>
+                    </div>
+                    <div style="flex: 1; position: relative;">
+                        <svg class="svg-canvas" id="vifSvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 6: Model Metrics -->
+                <div class="visual-panel" data-panel="6">
+                    <div class="panel-title"><span>#</span> PERFORMANCE COMPARATIVA DE ALGORITMOS</div>
+                    <div class="chart-control-row">
+                        <button class="profile-tab-btn active" data-metric-view="mape">MAPE</button>
+                        <button class="profile-tab-btn" data-metric-view="r2">R² Teste</button>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-card glass-panel">
+                            <div class="num" style="color: var(--accent-teal);">52.18%</div>
+                            <div class="lbl">Melhor MAPE (HGB)</div>
+                        </div>
+                        <div class="metric-card glass-panel">
+                            <div class="num" style="color: var(--accent-purple);">0.559</div>
+                            <div class="lbl">Melhor R² (HGB)</div>
+                        </div>
+                        <div class="metric-card glass-panel">
+                            <div class="num" style="color: var(--text-secondary);">58.91%</div>
+                            <div class="lbl">Baseline MAPE (OLS)</div>
+                        </div>
+                    </div>
+                    <div style="flex: 1; position: relative;">
+                        <svg class="svg-canvas" id="metricsSvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 7: Coefficients (OLS / Ridge / Lasso) -->
+                <div class="visual-panel" data-panel="7">
+                    <div class="panel-title"><span>#</span> INTERPRETABILIDADE LINEAR: OLS · RIDGE · LASSO</div>
+                    <div class="chart-control-row">
+                        <button class="profile-tab-btn active" data-coef-view="compare">Comparativo</button>
+                        <button class="profile-tab-btn" data-coef-view="ols">OLS</button>
+                        <button class="profile-tab-btn" data-coef-view="ridge">Ridge</button>
+                        <button class="profile-tab-btn" data-coef-view="lasso">Lasso</button>
+                    </div>
+                    <div class="chart-note">Coeficientes padronizados em escala log-salário. Barras vermelhas = inversão de sinal por colinearidade residual.</div>
+                    <div style="flex: 1; position: relative;">
+                        <svg class="svg-canvas" id="olsSvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 8: Permutation Importance -->
+                <div class="visual-panel" data-panel="8">
+                    <div class="panel-title"><span>#</span> MAPA DE INTERPRETABILIDADE · PERMUTATION (HGB)</div>
+                    <div class="interpret-strip" id="interpretStrip"></div>
+                    <div class="chart-note">Permutation importance no HistGradientBoosting (melhor modelo). Passe o mouse para ler a queda no R².</div>
+                    <div style="flex: 1; position: relative;">
+                        <svg class="svg-canvas" id="permutationSvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 9: SHAP Showcase -->
+                <div class="visual-panel" data-panel="9">
+                    <div class="panel-title"><span>#</span> SHAP WATERFALL (HGB) · PERFIS INDIVIDUAIS</div>
+                    <div class="shap-profile-selector">
+                        <button class="profile-tab-btn active" data-profile="curry">Stephen Curry</button>
+                        <button class="profile-tab-btn" data-profile="kaminsky">Frank Kaminsky</button>
+                        <button class="profile-tab-btn" data-profile="hardy">Jaden Hardy</button>
+                    </div>
+                    <div class="shap-focus-summary" id="shapFocusSummary"></div>
+
+                    <!-- SHAP Waterfall Visual -->
+                    <div class="waterfall-svg-container">
+                        <svg class="svg-canvas" id="shapWaterfallSvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 10: Extreme Errors -->
+                <div class="visual-panel" data-panel="10">
+                    <div class="panel-title"><span>#</span> ANÁLISE DE MAIORES ERROS (CONTRATOS TÓXICOS)</div>
+                    <div style="flex: 1; position: relative;">
+                        <svg class="svg-canvas" id="errorsSvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 11: Where Model Works -->
+                <div class="visual-panel" data-panel="11">
+                    <div class="panel-title"><span>#</span> DESVIO MÉDIO EM DÓLARES POR PERFIL (HGB)</div>
+                    <div class="chart-note">MAE = média de |salário real − previsto| no teste. Linha tracejada = MAE global US$ 3,68M. Valores em milhões de dólares.</div>
+                    <div style="flex: 1; position: relative;">
+                        <svg class="svg-canvas" id="fitMapSvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 12: Limitations -->
+                <div class="visual-panel" data-panel="12">
+                    <div class="panel-title"><span>#</span> VARIÁVEIS AUSENTES E TETO PREDITIVO</div>
+                    <div class="theory-strip">
+                        <span>Berri & Schmidt, 2006</span>
+                        <span>Mondello & Maxcy, 2014</span>
+                        <span>Lundberg & Lee, 2017</span>
+                    </div>
+                    <div style="flex: 1; position: relative;">
+                        <svg class="svg-canvas" id="limitationsSvg"></svg>
+                    </div>
+                </div>
+
+                <!-- Panel 13: Final Message -->
+                <div class="visual-panel" data-panel="13">
+                    <div class="panel-title"><span>#</span> FECHAMENTO DO SEMINÁRIO</div>
+                    <div class="finale-grid">
+                        <div class="finale-card">
+                            <div class="finale-kicker">Rigor</div>
+                            <div class="finale-value">VIF 419 → 13,8</div>
+                            <p>Auditoria, remoção de redundâncias e centralização polinomial.</p>
+                        </div>
+                        <div class="finale-card">
+                            <div class="finale-kicker">Performance</div>
+                            <div class="finale-value">R² 0,56</div>
+                            <p>Teto realista para box-score sem variáveis de mercado.</p>
+                        </div>
+                        <div class="finale-card">
+                            <div class="finale-kicker">Interpretação</div>
+                            <div class="finale-value">SHAP + Erros</div>
+                            <p>Explica previsões individuais e revela contratos tóxicos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel 14: References -->
+                <div class="visual-panel" data-panel="14">
+                    <div class="panel-title"><span>#</span> REFERÊNCIAS ESSENCIAIS</div>
+                    <div class="references-grid">
+                        <div class="reference-card"><strong>Berri & Schmidt (2006)</strong><span>Economia do esporte e limites de salários explicados por performance.</span></div>
+                        <div class="reference-card"><strong>Mondello & Maxcy (2014)</strong><span>Contexto econômico e performance do time influenciando remuneração.</span></div>
+                        <div class="reference-card"><strong>Kutner et al. (2004)</strong><span>Multicolinearidade, VIF e centralização de termos polinomiais.</span></div>
+                        <div class="reference-card"><strong>Hoerl & Kennard (1970)</strong><span>Ridge Regression como estabilização contra colinearidade.</span></div>
+                        <div class="reference-card"><strong>Tibshirani (1996)</strong><span>Lasso para seleção automática e parcimônia de variáveis.</span></div>
+                        <div class="reference-card"><strong>Lundberg & Lee (2017)</strong><span>SHAP como explicação aditiva individual baseada em teoria dos jogos.</span></div>
+                    </div>
+                </div>
+
+                <!-- Panel 15: Thanks -->
+                <div class="visual-panel thank-you-panel" data-panel="15">
+                    <div class="thanks-wrap">
+                        <div class="thanks-kicker">Grupo 5 • UFSCar</div>
+                        <div class="thanks-title">Obrigado</div>
+                        <div class="thanks-subtitle">Perguntas?</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Interactive Detail Drawer -->
+    <div class="detail-drawer" id="detailDrawer">
+        <div class="drawer-header">
+            <h4 id="drawerTitle">Nome do Jogador</h4>
+            <button class="drawer-close" id="drawerClose">&times;</button>
+        </div>
+        <div class="drawer-content" id="drawerContent">
+            <!-- Filled via JS -->
+        </div>
+    </div>
+
+    <!-- Chart Hover Tooltip -->
+    <div class="chart-tooltip" id="chartTooltip"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
