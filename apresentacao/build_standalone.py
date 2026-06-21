@@ -24,12 +24,26 @@ def load_video_data_uri() -> str:
     raise FileNotFoundError("Vídeo de fundo não encontrado.")
 
 
+def sanitize_css_for_inline(css: str) -> str:
+    return re.sub(
+        r"@import\s+url\([^)]+\)\s*;",
+        "/* fontes web removidas no bundle offline — usa system-ui */",
+        css,
+    )
+
+
+def sanitize_js_for_inline(js: str) -> str:
+    return js.replace("</script>", "<\\/script>").replace("</SCRIPT>", "<\\/SCRIPT>")
+
+
 def build() -> None:
     html = SOURCE.read_text(encoding="utf-8")
     css_files = ["base.css", "slides.css", "animations.css"]
-    css = "\n\n".join((ROOT / "css" / name).read_text(encoding="utf-8") for name in css_files)
-    data_js = (ROOT / "js" / "data.js").read_text(encoding="utf-8")
-    app_js = (ROOT / "js" / "app.js").read_text(encoding="utf-8")
+    css = sanitize_css_for_inline(
+        "\n\n".join((ROOT / "css" / name).read_text(encoding="utf-8") for name in css_files)
+    )
+    data_js = sanitize_js_for_inline((ROOT / "js" / "data.js").read_text(encoding="utf-8"))
+    app_js = sanitize_js_for_inline((ROOT / "js" / "app.js").read_text(encoding="utf-8"))
     video_uri = load_video_data_uri()
 
     html = re.sub(
@@ -57,10 +71,12 @@ def build() -> None:
     )
 
     banner = (
-        "<!-- Gerado por build_standalone.py a partir de source.html — abra direto no navegador. -->\n"
+        "<!-- APRESENTAÇÃO NBA — arquivo autocontido (~6 MB). Abra direto no navegador. -->\n"
+        "<!-- Se aparecer sem estilo (fundo branco), você baixou a versão errada/antiga. -->\n"
+        "<!-- Baixe de: github.com/ArthurGoon/Projeto-Mineracao-de-Dados/raw/main/apresentacao/index.html -->\n"
         "<!-- Para editar: altere source.html, css/ e js/, depois rode: python3 build_standalone.py -->\n"
     )
-    if not html.startswith("<!-- Gerado por build_standalone"):
+    if not html.startswith("<!-- APRESENTAÇÃO NBA"):
         html = banner + html
 
     OUT.write_text(html, encoding="utf-8")
