@@ -1,0 +1,159 @@
+/home/arthur/.local/lib/python3.12/site-packages/matplotlib/projections/__init__.py:63: UserWarning: Unable to import Axes3D. This may be due to multiple versions of Matplotlib being installed (e.g. as a system package and as a pip package). As a result, the 3D projection is not available.
+  warnings.warn("Unable to import Axes3D. This may be due to multiple versions of "
+======================================================================
+AUDITORIA POS-PIPELINE - REGRESSAO NBA MELHORADA
+======================================================================
+
+======================================================================
+1. OUTLIERS SALARIAIS RESTANTES
+======================================================================
+
+[A] Outliers removidos: 10 jogadores com salario < $100k
+    Salario minimo NBA 2022-23: $1,015,781 (contrato padrao)
+    Contratos two-way: ~$500k ou pro-rata
+    VEREDICTO: Justificada. Esses jogadores representam mercado G-League,
+    nao o mercado salarial NBA. Remover e appropriado.
+
+[B] MAS: E os outliers na CAUDA SUPERIOR?
+    11 jogadores com salario > $40M:
+          Player Name   Salary  Age  GP   MP
+        Stephen Curry 48070014   34  56 34.7
+            John Wall 47345760   32  34 22.2
+    Russell Westbrook 47080179   34  73 29.1
+         LeBron James 44474988   38  55 35.5
+         Kevin Durant 44119845   34  47 35.6
+         Bradley Beal 43279250   29  50 33.5
+        Kawhi Leonard 42492492   31  52 33.6
+          Paul George 42492492   32  56 34.6
+Giannis Antetokounmpo 42492492   28  63 32.1
+       Damian Lillard 42492492   32  58 36.3
+        Klay Thompson 40600080   32  69 33.0
+
+    John Wall: 34 anos, $47M -> provavelmente contrato residual (lesao)
+    Kevin Love: 34 anos, $30M -> declinio, mas contrato antigo
+    Klay Thompson: 32 anos, $40M -> recuperacao de lesao
+    Russell Westbrook: 34 anos, $47M -> negociado, sub-utilizado
+
+======================================================================
+2. HETEROCEDASTICIDADE NOS RESIDUOS
+======================================================================
+
+[A] Correlacao resid^2 vs preditos (Breusch-Pagan proxy): -0.1621
+    Valor > 0.1 sugere heterocedasticidade.
+    VEREDICTO: HETEROCEDASTICIDADE DETECTADA.
+    Solucao: WLS (Weighted Least Squares) ou regressao robusta (Huber)
+
+[B] Correlacao resid^2 vs preditos^2 (White proxy): -0.1664
+
+======================================================================
+3. COLINEARIDADE REMANESCENTE
+======================================================================
+                    Feature        VIF
+                        Age 927.171128
+                       USG% 454.201600
+                   Age_x_MP 445.150727
+                PTS_per_min 441.117483
+                         MP 432.542063
+                   Age_x_GP 412.178678
+                         GP 404.600118
+                     Age_sq 394.292036
+                        FG%  71.766099
+                        FT%  46.218874
+                TRB_per_min  23.763156
+                AST_per_min  21.847873
+                STL_BLK_sum  16.083765
+                 TRB_per_GP  14.321691
+                 PTS_per_GP  12.055560
+                        BPM  11.180717
+                        3P%  10.967493
+                 AST_to_TOV  10.768542
+                 AST_per_GP   6.902083
+                 STL_per_GP   5.507835
+          Position_Clean_SG   5.467195
+          Position_Clean_PG   5.268106
+Experience_Category_Veteran   5.264800
+                       VORP   3.886159
+          Position_Clean_SF   3.815423
+          Position_Clean_PF   2.706474
+ Experience_Category_Rookie   2.578721
+
+Features com VIF > 10: 18
+    Ainda ha multicolinearidade. Considerar remover ou combinar:
+    Feature        VIF
+        Age 927.171128
+       USG% 454.201600
+   Age_x_MP 445.150727
+PTS_per_min 441.117483
+         MP 432.542063
+   Age_x_GP 412.178678
+         GP 404.600118
+     Age_sq 394.292036
+        FG%  71.766099
+        FT%  46.218874
+TRB_per_min  23.763156
+AST_per_min  21.847873
+STL_BLK_sum  16.083765
+ TRB_per_GP  14.321691
+ PTS_per_GP  12.055560
+        BPM  11.180717
+        3P%  10.967493
+ AST_to_TOV  10.768542
+
+======================================================================
+4. PONTOS INFLUENTES (Cook's Distance)
+======================================================================
+
+Threshold Cook's distance (4/n): 0.0088
+Pontos influentes: 32
+     Player Name   Salary  Age  GP  Cooks_Distance
+      Louis King   307089   23   1        0.422960
+    Tyler Dorsey   201802   26   3        0.094601
+    Daniel Theis  8694369   30   7        0.085165
+     Mac McClung   160856   24   2        0.076163
+   Deonte Burton   105522   29   2        0.076067
+Facundo Campazzo   464299   31   8        0.058159
+    Kemba Walker 37281261   32   9        0.043116
+Donovan Williams   239822   21   2        0.042664
+  Sterling Brown  3122602   27   4        0.041137
+  Jonathan Isaac 17400000   25  11        0.035123
+
+    VEREDICTO: 32 pontos exercem influencia desproporcional.
+    John Wall (contrato residual) provavelmente e o mais influente.
+    Solucao: Regressao robusta (Huber) ou remocao justificada.
+
+======================================================================
+5. ASSIMETRIA DOS RESIDUOS
+======================================================================
+
+Assimetria dos residuos: -0.076
+Curtose dos residuos: 0.236
+    VEREDICTO: Residuos aproximadamente simétricos.
+
+======================================================================
+6. REGRESSAO ROBUSTA (Huber) vs OLS PADRAO
+======================================================================
+
+OLS padrao:       R2=0.7306, MAPE=69.90%
+Huber (robusto):  R2=0.7260, MAPE=72.17%
+
+    VEREDICTO: OLS ja e robusto o suficiente.
+
+======================================================================
+7. FEATURES COM BAIXA CONTRIBUICAO
+======================================================================
+Traceback (most recent call last):
+  File "/home/arthur/Projeto Mineração de dados /Regressão/auditoria_pos_pipeline_regressao.py", line 239, in <module>
+    coef_df = pd.DataFrame({'Feature': X.columns, 'Coef_OLS': ols_sk.coef_})
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arthur/.local/lib/python3.12/site-packages/pandas/core/frame.py", line 782, in __init__
+    mgr = dict_to_mgr(data, index, columns, dtype=dtype, copy=copy, typ=manager)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arthur/.local/lib/python3.12/site-packages/pandas/core/internals/construction.py", line 503, in dict_to_mgr
+    return arrays_to_mgr(arrays, columns, index, dtype=dtype, typ=typ, consolidate=copy)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arthur/.local/lib/python3.12/site-packages/pandas/core/internals/construction.py", line 114, in arrays_to_mgr
+    index = _extract_index(arrays)
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arthur/.local/lib/python3.12/site-packages/pandas/core/internals/construction.py", line 677, in _extract_index
+    raise ValueError("All arrays must be of the same length")
+ValueError: All arrays must be of the same length

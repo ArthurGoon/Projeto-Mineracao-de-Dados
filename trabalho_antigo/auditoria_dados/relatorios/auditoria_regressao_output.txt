@@ -1,0 +1,282 @@
+======================================================================
+AUDITORIA DE QUALIDADE DE DADOS - REGRESSAO NBA SALARIOS
+======================================================================
+
+======================================================================
+1. CARREGAMENTO E INSPECAO INICIAL
+======================================================================
+Dimensao: 467 linhas x 51 colunas
+Colunas: ['Player Name', 'Salary', 'Position', 'Age', 'Team', 'GP', 'GS', 'MP', 'FG', 'FGA', 'FG%', '3P', '3PA', '3P%', '2P', '2PA', '2P%', 'eFG%', 'FT', 'FTA', 'FT%', 'ORB', 'DRB', 'TRB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', 'Total Minutes', 'PER', 'TS%', '3PAr', 'FTr', 'ORB%', 'DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', 'OWS', 'DWS', 'WS', 'WS/48', 'OBPM', 'DBPM', 'BPM', 'VORP']
+Duplicatas completas: 0
+Duplicatas por nome: 0
+
+======================================================================
+2. ANALISE DO TARGET (SALARY)
+======================================================================
+
+Estatisticas descritivas:
+count    4.670000e+02
+mean     8.416599e+06
+std      1.070812e+07
+min      5.849000e+03
+25%      1.782621e+06
+50%      3.722040e+06
+75%      1.063354e+07
+max      4.807001e+07
+Name: Salary, dtype: float64
+
+Assimetria: 1.836
+Curtose: 2.615
+
+Outliers (IQR method):
+  Limite inferior: $-11,493,763
+  Limite superior: $23,909,927
+  Numero de outliers: 48
+  Numero de outliers (|z| > 3): 11
+
+--- Jogadores com salario extremamente baixo (< $100k) ---
+Quantidade: 10
+       Player Name Team  Salary  GP   MP  Age
+ Lindell Wigginton  MIL   99438   7 12.4   24
+    Jordan Schakel  WAS   96514   2  3.0   24
+     Stanley Umude  DET   58493   1  2.0   23
+Jeenathan Williams  POR   52644   5 25.4   23
+        Jay Scrubb  ORL   49719   2 15.0   22
+     Justin Minaya  POR   35096   4 22.3   23
+      Kobi Simmons  CHO   32795   5  5.6   25
+         Gabe York  IND   32171   3 18.7   29
+      RaiQuan Gray  BRK    5849   1 35.0   23
+     Jacob Gilyard  MEM    5849   1 41.0   24
+
+--- Jogadores com salario extremamente alto (> $40M) ---
+Quantidade: 11
+          Player Name    Team   Salary  GP   MP  Age  PTS
+        Stephen Curry     GSW 48070014  56 34.7   34 29.4
+            John Wall     LAC 47345760  34 22.2   32 11.4
+    Russell Westbrook LAL/LAC 47080179  73 29.1   34 15.9
+         LeBron James     LAL 44474988  55 35.5   38 28.9
+         Kevin Durant BRK/PHO 44119845  47 35.6   34 29.1
+         Bradley Beal     WAS 43279250  50 33.5   29 23.2
+        Kawhi Leonard     LAC 42492492  52 33.6   31 23.8
+          Paul George     LAC 42492492  56 34.6   32 23.8
+Giannis Antetokounmpo     MIL 42492492  63 32.1   28 31.1
+       Damian Lillard     POR 42492492  58 36.3   32 32.2
+        Klay Thompson     GSW 40600080  69 33.0   32 21.9
+
+Salario <= 0: 0
+
+======================================================================
+3. ANALISE DE MISSING VALUES
+======================================================================
+
+Colunas com missing values:
+  FT%: 23 (4.9%)
+  3P%: 13 (2.8%)
+  2P%: 4 (0.9%)
+  FG%: 1 (0.2%)
+  eFG%: 1 (0.2%)
+  TS%: 1 (0.2%)
+  3PAr: 1 (0.2%)
+  FTr: 1 (0.2%)
+
+--- Missing FT% por posicao ---
+          Missing_FT%  Total   Pct
+Position                          
+C                   0     91   0.0
+PF                  3     86   3.5
+PG                  5     77   6.5
+PG-SG               0      2   0.0
+SF                 10     91  11.0
+SF-PF               0      1   0.0
+SF-SG               0      2   0.0
+SG                  5    115   4.3
+SG-PG               0      2   0.0
+
+--- Missing 3P% por posicao ---
+          Missing_3P%  Total  Pct
+Position                         
+C                   8     91  8.8
+PF                  1     86  1.2
+PG                  0     77  0.0
+PG-SG               0      2  0.0
+SF                  2     91  2.2
+SF-PF               0      1  0.0
+SF-SG               0      2  0.0
+SG                  2    115  1.7
+SG-PG               0      2  0.0
+
+======================================================================
+4. MULTICOLINEARIDADE (VIF)
+======================================================================
+
+Variance Inflation Factor (VIF) por feature:
+Feature        VIF
+    TS% 419.283959
+    FG% 259.068238
+     MP 149.677549
+    PER 107.069981
+   USG%  64.359992
+    PTS  59.578401
+    FT%  41.122086
+     WS  36.264945
+    Age  33.924787
+   VORP  23.516492
+     GP  15.886270
+    TRB  15.657442
+    BPM  15.251165
+    3P%  11.564137
+    STL  11.018215
+    AST   9.940480
+    BLK   4.620620
+
+Features com VIF > 10 (alta multicolinearidade): 15
+Features com VIF > 5 (moderada multicolinearidade): 16
+
+--- Correlacoes entre estatisticas avancadas ---
+       PER   TS%  USG%    WS  VORP   BPM
+PER   1.00  0.58  0.48  0.55  0.58  0.90
+TS%   0.58  1.00  0.06  0.37  0.28  0.52
+USG%  0.48  0.06  1.00  0.33  0.47  0.26
+WS    0.55  0.37  0.33  1.00  0.89  0.51
+VORP  0.58  0.28  0.47  0.89  1.00  0.53
+BPM   0.90  0.52  0.26  0.51  0.53  1.00
+
+======================================================================
+5. INCONSISTENCIAS LOGICAS
+======================================================================
+
+GS > GP (titular mais vezes que jogos): 0
+
+Total Minutes diferente de GP*MP por >10 min: 0
+
+Jogadores com 0 GP mas stats > 0: 0
+
+Jogadores com MP>0 mas 0 pontos/chutes: 1
+     Player Name Team  GP  MP  PTS
+Alondes Williams  BRK   1 5.0  0.0
+
+======================================================================
+6. ANALISE POR POSICAO
+======================================================================
+
+Distribuicao por posicao:
+Position_Clean
+SG    117
+SF     94
+C      91
+PF     86
+PG     79
+Name: count, dtype: int64
+
+Salario medio por posicao:
+                      mean     median         std  count
+Position_Clean                                          
+C                7282722.0  2905851.0   8983558.0     91
+PF               8885045.0  4358960.0  10897789.0     86
+PG              11829674.0  4833600.0  14079125.0     79
+SF               8165048.0  3544500.0  10966186.0     94
+SG               6851720.0  3098400.0   8346669.0    117
+
+Missing FT% por posicao (condicional):
+  PG: 5/79 (6.3%)
+  PF: 3/86 (3.5%)
+  SG: 5/117 (4.3%)
+  SF: 10/94 (10.6%)
+  C: 0/91 (0.0%)
+
+======================================================================
+7. DISTRIBUICAO DAS FEATURES NUMERICAS
+======================================================================
+      Feature        Mean        Std     Min        Q1   Median         Q3      Max      Skew  Outliers_IQR
+          Age   25.820128   4.275113  19.000  23.00000  25.0000   29.00000   42.000  0.709744             2
+           GP   48.233405  24.807740   1.000  31.00000  55.0000   68.50000   83.000 -0.521963             0
+           GS   22.650964  27.094577   0.000   1.00000   8.0000   45.50000   83.000  0.878989             0
+           MP   19.871306   9.548684   1.800  12.50000  19.2000   28.30000   41.000  0.098318             0
+           FG    3.351392   2.457836   0.000   1.60000   2.7000    4.30000   11.200  1.106640            26
+          FGA    7.117773   5.020700   0.000   3.30000   5.8000    9.40000   22.200  1.073966            19
+          FG%    0.465009   0.109547   0.000   0.41700   0.4550    0.50750    1.000  0.046610            39
+           3P    0.996574   0.880468   0.000   0.30000   0.8000    1.50000    4.900  1.123609             8
+          3PA    2.792719   2.260794   0.000   1.00000   2.4000    4.15000   11.400  0.978389             7
+          3P%    0.325090   0.131624   0.000   0.28800   0.3445    0.38700    1.000  0.226265            52
+           2P    2.356531   1.989397   0.000   0.90000   1.7000    3.30000   10.500  1.412728            19
+          2PA    4.325268   3.571280   0.000   1.80000   3.2000    5.85000   17.800  1.382934            23
+          2P%    0.533464   0.136046   0.000   0.48700   0.5370    0.59450    1.000 -0.824640            31
+         eFG%    0.534266   0.104584   0.000   0.49375   0.5375    0.57800    1.000 -0.846078            37
+           FT    1.435546   1.568500   0.000   0.50000   0.9000    1.85000   10.000  2.239806            41
+          FTA    1.848394   1.896352   0.000   0.60000   1.2000    2.35000   12.300  2.161393            38
+          FT%    0.753489   0.148659   0.000   0.69100   0.7690    0.84400    1.000 -1.655725            14
+          ORB    0.866809   0.746976   0.000   0.40000   0.7000    1.10000    5.100  1.842208            30
+          DRB    2.662099   1.707984   0.000   1.40000   2.3000    3.50000    9.600  1.134458            14
+          TRB    3.528051   2.277160   0.000   1.90000   3.0000    4.50000   12.500  1.232689            22
+          AST    2.107709   1.957517   0.000   0.80000   1.4000    2.90000   10.700  1.588359            30
+          STL    0.610493   0.399083   0.000   0.30000   0.6000    0.80000    3.000  1.099048            10
+          BLK    0.379015   0.364387   0.000   0.10000   0.3000    0.50000    2.500  2.160712            22
+          TOV    1.114133   0.830051   0.000   0.50000   0.9000    1.50000    4.100  1.177772            19
+           PF    1.702784   0.776957   0.000   1.20000   1.7000    2.20000    5.000  0.208382             3
+          PTS    9.129979   6.906006   0.000   4.10000   7.1000   11.70000   33.100  1.216958            29
+Total Minutes 1109.676660 827.367432   2.000 341.00000 990.0000 1842.00000 2963.000  0.289274             0
+          PER   13.279657   6.230049 -20.900  10.10000  13.0000   16.35000   65.600  1.039949            20
+          TS%    0.563024   0.100741   0.000   0.52400   0.5670    0.61000    1.064 -1.023098            36
+         3PAr    0.403655   0.219066   0.000   0.26825   0.4090    0.54575    1.000  0.027100             3
+          FTr    0.249749   0.186855   0.000   0.14325   0.2260    0.32375    2.000  4.122367            12
+         ORB%    5.243469   4.332254   0.000   2.10000   3.8000    7.10000   28.800  1.550741            19
+         DRB%   14.884582   6.478093   0.000  10.70000  13.5000   18.35000   55.400  1.052082             9
+         TRB%   10.061456   4.671516   0.000   6.75000   9.0000   12.50000   29.600  0.889156            10
+         AST%   13.563812   8.630677   0.000   7.45000  11.2000   18.00000   47.600  1.083647            15
+         STL%    1.523555   1.368860   0.000   1.00000   1.4000    1.70000   24.200 10.304331            26
+         BLK%    1.832120   2.524336   0.000   0.70000   1.2000    2.35000   44.100 10.439744            32
+         TOV%   12.735974   7.198533   0.000   9.50000  11.9000   15.00000  100.000  4.729535            37
+         USG%   18.425910   5.909528   5.100  14.30000  17.6000   21.15000   52.500  1.103818            12
+          OWS    1.208351   1.765160  -1.900   0.00000   0.6000    1.80000    9.600  1.728187            30
+          DWS    1.120557   0.980478   0.000   0.30000   0.9000    1.80000    4.800  0.860423             2
+           WS    2.328908   2.533094  -1.600   0.30000   1.5000    3.55000   12.600  1.323061            14
+        WS/48    0.081771   0.088089  -0.517   0.04700   0.0870    0.12950    0.626 -1.202085            22
+         OBPM   -1.344968   3.578193 -22.500  -2.90000  -1.3000    0.45000   17.000 -0.447049            25
+         DBPM   -0.087152   2.243437 -10.400  -0.90000  -0.1000    0.80000   32.700  6.265075            21
+          BPM   -1.432548   4.925175 -26.500  -3.30000  -1.3000    0.60000   48.600  1.372394            29
+         VORP    0.539829   1.172960  -1.300  -0.10000   0.1000    0.80000    6.400  2.131025            42
+Calc_TotalMin 1109.713919 827.287072   2.000 342.10000 991.2000 1840.90000 2963.100  0.288904             0
+     Min_Diff   -0.037259   1.609555  -4.000  -1.10000   0.0000    1.00000    4.000  0.030103             0
+
+======================================================================
+8. RECOMENDACOES (RESUMO)
+======================================================================
+
+[A] OUTLIERS NO TARGET (SALARY):
+    - 10 jogadores com salario < $100k (minimo $5.849): verificar se sao contratos
+      two-way, dados de G-League, ou erros de entrada. Recomendacao: investigar
+      individualmente; possivelmente remover ou usar winsorizacao.
+    - 11 jogadores > $40M: validar como superstars reais (Curry, Durant, etc.).
+      Recomendacao: manter, mas considerar modelagem robusta ou transformacao.
+
+[B] MISSING VALUES:
+    - 23 missing em FT%: usar imputacao condicional por posicao (centers tem
+      FT% menor que guards). A imputacao global com mediana mascara diferencas
+      entre posicoes.
+    - 13 missing em 3P%: justificavel — pivos que nunca arremessam de 3.
+      Imputacao por posicao ou 0 (se nunca tentou).
+
+[C] MULTICOLINEARIDADE:
+    - VIF > 10 para: PER, VORP, WS, BPM, MP, Total Minutes
+    - Solucao: remover uma de {PER, BPM} (r=0.90) e uma de {WS, VORP} (r=0.89).
+      Alternativamente, usar PCA nos stats avancadas ou Ridge.
+
+[D] INCONSISTENCIAS:
+    - Verificar casos de GS > GP e Total Minutes != GP*MP.
+    - Jogadores com 0 GP mas stats > 0 precisam de investigacao.
+
+[E] FEATURE ENGINEERING FALTANTE:
+    - Idade ao quadrado para capturar pico de carreira.
+    - Stats normalizados por minuto (nao so por jogo).
+    - Interacoes: Age x MP, Age x GP.
+    - Categorias de experiencia (rookie/prime/veteran).
+
+[F] PIPELINE EXISTENTE:
+    - Log-transformacao do salario e adequada (reduz assimetria).
+    - Divisao 75/25 e aleatoria; recomendacao: usar CV estratificado por posicao.
+    - Modelos existentes (OLS, Ridge, Lasso, RF) sao razoaveis; adicionar
+      HistGradientBoosting e Stacking para comparacao.
+
+
+Relatorio salvo em: auditoria_dados/relatorios/auditoria_regressao.txt
+======================================================================

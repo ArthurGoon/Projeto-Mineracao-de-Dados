@@ -1,0 +1,159 @@
+---
+title: "Comparando OLS, Ridge e Lasso"
+author: "Helton Graziadei"
+format: html
+execute:
+  warning: false
+  message: false
+---
+
+Neste exemplo, usaremos o banco de dados `fat` do pacote `faraway`. O objetivo é explicar a variabilidade no percentual de gordura corporal de indivíduos a partir de diversas medidas antropométricas, como idade, peso, altura e circunferências corporais (pescoço, abdômen, quadril, entre outras).\
+\
+Vamos avaliar como o modelo de Mínimos Quadrados Ordinários (OLS) se comporta em uma divisão padrão de 70% para treino e 30% para teste, e comparar seu desempenho com métodos de regularização como Ridge e Lasso, que podem ajudar a estabilizar as estimativas e melhorar a capacidade preditiva.
+
+```{r}
+#| label: plot-espectro
+#| fig-width: 9
+#| fig-height: 5
+
+library(tidyverse)
+library(glmnet)
+library(Metrics)
+library(faraway)
+library(plotmo)
+
+# Carregando os dados
+data(fat)
+df <- fat
+```
+
+```{r}
+#| label: setup-dados
+
+set.seed(123)
+
+# Divisão Padrão: 70% treino, 30% teste
+id_treino <- sample(1:nrow(df), 0.7 * nrow(df))
+df_treino <- df[id_treino, ]
+df_teste <- df[-id_treino, ]
+
+# Preparando as matrizes para o glmnet
+X_treino <- model.matrix(brozek ~  age + weight + 
+                    height + adipos +
+                    neck + chest + 
+                    abdom + hip + thigh +
+                    knee + ankle + 
+                    biceps + forearm + 
+                    wrist, data = df_treino)[, -1]
+y_treino <- df_treino$brozek
+
+X_teste <- model.matrix(brozek ~  age + weight + 
+                    height + adipos +
+                    neck + chest + 
+                    abdom + hip + thigh +
+                    knee + ankle + 
+                    biceps + forearm + 
+                    wrist, data = df_teste)[, -1]
+y_teste <- df_teste$brozek
+```
+
+```{r}
+#| label: modelo-ols
+
+modelo_ols <- glmnet(X_treino, y_treino, alpha = 1, lambda = 0)
+
+pred_ols <- predict(modelo_ols, s = 0, newx = X_teste)
+
+mse_ols <- mse(y_teste, pred_ols)
+```
+
+```{r}
+#| label: modelo-ridge
+
+# Encontrando o melhor lambda via Validação Cruzada
+set.seed(123)
+cv_ridge <- cv.glmnet(X_treino, y_treino, alpha = 0)
+lambda_ridge <- cv_ridge$lambda.min
+
+modelo_ridge <- glmnet(X_treino, y_treino,
+	alpha = 0, lambda = lambda_ridge)
+
+pred_ridge <- predict(modelo_ridge,
+	s = lambda_ridge, newx = X_teste)
+mse_ridge <- mse(y_teste, pred_ridge)
+```
+
+```{r}
+#| label: modelo-lasso
+
+# Encontrando o melhor lambda via Validação Cruzada
+cv_lasso <- cv.glmnet(X_treino, y_treino,
+	alpha = 1)
+lambda_lasso <- cv_lasso$lambda.min
+
+modelo_lasso <- glmnet(X_treino, y_treino, 
+	alpha = 1,	lambda = lambda_lasso)
+
+# Previsão e Erro
+pred_lasso <- predict(modelo_lasso, 
+	s = lambda_lasso, newx = X_teste)
+mse_lasso <- mse(y_teste, pred_lasso)
+```
+
+```{r}
+#| label: comparacao-mse
+
+resultados_mse <- tibble(
+  Modelo = c("OLS", "Ridge", "Lasso"),
+  MSE_Teste = c(mse_ols, mse_ridge, mse_lasso)
+) |> 
+  arrange(MSE_Teste)
+
+knitr::kable(resultados_mse, digits = 2, caption = "Erro Quadrático Médio (MSE) no Teste")
+```
+
+```{r}
+#| label: analise-coeficientes
+#| fig-width: 9
+#| fig-height: 5
+
+# Extraindo coeficientes (ignorando o intercepto)
+coef_ols <- coef(modelo_ols)[-1]
+coef_ridge <- as.numeric(coef(modelo_ridge))[-1]
+coef_lasso <- as.numeric(coef(modelo_lasso))[-1]
+
+df_coef <- tibble(
+	Variavel = names(coef(modelo_ols)[-1,1]),
+	OLS = coef_ols,
+  Ridge = coef_ridge,
+  Lasso = coef_lasso
+) |> 
+  pivot_longer(cols = c(OLS, Ridge, Lasso), names_to = "Modelo", values_to = "Valor") |> 
+  mutate(Modelo = factor(Modelo, levels = c("OLS", "Ridge", "Lasso")))
+
+ggplot(df_coef, aes(x = Valor, y = as.factor(Variavel), color = Modelo)) +
+  geom_col(fill = "white", alpha = 0.7, linewidth = 1) +
+  facet_wrap(~ Modelo, scales = "free_x") + 
+  theme_minimal() +
+  labs(x = "Valor do Coeficiente",
+       y = "Índice da Variável") +
+  theme(legend.position = "none")
+
+# Quantidade de variáveis utilizadas
+cat("Variáveis diferentes de zero no OLS:", sum(round(coef_ols, 4) != 0), "\n")
+cat("Variáveis diferentes de zero no Ridge:", sum(round(coef_ridge, 4) != 0), "\n")
+cat("Variáveis diferentes de zero no Lasso:", sum(coef_lasso != 0), "\n")
+```
+
+```{r}
+lasso_full <- glmnet(X_treino, y_treino, 
+	alpha = 1)
+
+cores14 <- c(
+  "#1F77B4", "#E87722",  "#2CA02C", "#D62728",  "#9467BD",
+  "#8C564B", "#E377C2",  "#7F7F7F", "#BCBD22", "#17BECF", 
+  "#003366", "#FFD700",  "#000000","#00CED1")
+
+plot_glmnet(lasso_full, xvar = "lambda", label = TRUE,
+            col = cores14)
+```

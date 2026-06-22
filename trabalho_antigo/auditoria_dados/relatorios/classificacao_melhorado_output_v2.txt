@@ -1,0 +1,174 @@
+/home/arthur/.local/lib/python3.12/site-packages/matplotlib/projections/__init__.py:63: UserWarning: Unable to import Axes3D. This may be due to multiple versions of Matplotlib being installed (e.g. as a system package and as a pip package). As a result, the 3D projection is not available.
+  warnings.warn("Unable to import Axes3D. This may be due to multiple versions of "
+=== 1. LEITURA E LIMPEZA MELHORADA ===
+Results: (4560, 6)
+Stats: (240, 42)
+
+[A] MISSING VALUES em stats:
+   big_chance_missed: 80/240 (33.3%)
+   backward_pass: 80/240 (33.3%)
+   head_clearance: 20/240 (8.3%)
+   saves: 20/240 (8.3%)
+   total_through_ball: 20/240 (8.3%)
+   dispossessed: 20/240 (8.3%)
+
+   Features REMOVIDAS (>30% missing): ['big_chance_missed', 'backward_pass']
+   saves: 20 -> 0 (imputado por temporada)
+   head_clearance: 20 -> 0 (imputado por temporada)
+   total_through_ball: 20 -> 0 (imputado por temporada)
+   dispossessed: 20 -> 0 (imputado por temporada)
+
+=== 2. FEATURE ENGINEERING AVANCADO ===
+
+[B] STATS DA TEMPORADA ANTERIOR (mitiga leakage temporal):
+   Merge concluido. Linhas: 4560
+
+[C] FORMA RECENTE (ultimos 5 jogos):
+   diff_forma_5: media=0.357, std=1.023
+
+[D] RODADA e FASE DA TEMPORADA:
+   Distribuicao de fase: {'Meio': 216, 'Final': 144, 'Inicio': 120}
+
+[E] HEAD-TO-HEAD (ultimas 3 partidas entre os times):
+   hh_wins_home: media=0.353
+
+=== 3. SELECAO DE FEATURES ===
+
+   Linhas ANTES: 4560 | APOS dropna: 4560 | Perdidas: 0
+   Features finais: 47
+   Amostras finais: 4560
+
+=== 4. DIVISAO TEMPORAL E WALK-FORWARD ===
+Treino: 3800 (2006-2007 a 2015-2016)
+Teste: 760 (2016-2017 a 2017-2018)
+Taxa vitoria casa (treino): 0.460
+Taxa vitoria casa (teste): 0.474
+
+[F] Walk-forward validation (TimeSeriesSplit, 5 folds):
+
+=== 5. PRE-PROCESSAMENTO ===
+
+=== 6. MODELAGEM ===
+
+--- Logistica Binaria com Lasso ---
+  Melhor C: 0.0268
+
+--- Logistica Lasso ---
+  AUC CV (walk-forward): 0.7075 (+/- 0.0307)
+  Acuracia: 0.6658 | Precisao: 0.6767 | Recall: 0.5639 | F1: 0.6152
+  AUC-ROC Teste: 0.7052 | AUC-PR: 0.6693 | Brier: 0.2175
+
+--- Random Forest ---
+  Melhores params: {'clf__max_depth': 10, 'clf__min_samples_leaf': 2, 'clf__min_samples_split': 2, 'clf__n_estimators': 300}
+
+--- Random Forest ---
+  AUC CV (walk-forward): 0.6967 (+/- 0.0300)
+  Acuracia: 0.6592 | Precisao: 0.6877 | Recall: 0.5139 | F1: 0.5882
+  AUC-ROC Teste: 0.7062 | AUC-PR: 0.6713 | Brier: 0.2182
+
+--- HistGradientBoosting (NOVO) ---
+  Melhores params: {'clf__learning_rate': 0.05, 'clf__max_depth': 3, 'clf__max_iter': 100, 'clf__min_samples_leaf': 10}
+
+--- HistGradientBoosting ---
+  AUC CV (walk-forward): 0.6937 (+/- 0.0291)
+  Acuracia: 0.6539 | Precisao: 0.6830 | Recall: 0.5028 | F1: 0.5792
+  AUC-ROC Teste: 0.6940 | AUC-PR: 0.6614 | Brier: 0.2209
+XGBoost nao disponivel. Pulando.
+
+--- Calibracao de Probabilidades (NOVO) ---
+
+--- RF Calibrado ---
+  AUC CV (walk-forward): 0.6918 (+/- 0.0335)
+  Acuracia: 0.6605 | Precisao: 0.6835 | Recall: 0.5278 | F1: 0.5956
+  AUC-ROC Teste: 0.7098 | AUC-PR: 0.6790 | Brier: 0.2178
+
+=== 7. RESUMO COMPARATIVO ===
+              Modelo   AUC_CV  AUC_CV_std  Acuracia  Precisao   Recall       F1  AUC_Test   AUC_PR    Brier
+     Logistica Lasso 0.707500    0.030655  0.665789  0.676667 0.563889 0.615152  0.705187 0.669341 0.217498
+       Random Forest 0.696724    0.030025  0.659211  0.687732 0.513889 0.588235  0.706236 0.671300 0.218186
+HistGradientBoosting 0.693716    0.029103  0.653947  0.683019 0.502778 0.579200  0.693997 0.661416 0.220939
+        RF Calibrado 0.691822    0.033456  0.660526  0.683453 0.527778 0.595611  0.709826 0.678979 0.217821
+
+=== 8. INTERPRETABILIDADE ===
+
+--- Coeficientes Lasso ---
+                Feature  Coeficiente      Abs
+    diff_goals_conceded    -0.285867 0.285867
+            diff_losses    -0.203089 0.203089
+             diff_goals     0.138727 0.138727
+ diff_total_scoring_att     0.102021 0.102021
+              diff_wins     0.078650 0.078650
+      diff_corner_taken     0.033679 0.033679
+      diff_att_pen_goal     0.028014 0.028014
+        diff_total_pass     0.027105 0.027105
+   diff_last_man_tackle     0.020368 0.020368
+diff_clearance_off_line    -0.011252 0.011252
+       diff_total_cross     0.006667 0.006667
+    diff_goal_fastbreak     0.006470 0.006470
+           diff_forma_5     0.004399 0.004399
+           diff_forma_5     0.004399 0.004399
+      diff_dispossessed     0.001817 0.001817
+
+--- Importancia Permutacao (RF) ---
+                  Feature  Importancia   Desvio
+        diff_corner_taken     0.004457 0.001395
+      diff_goals_conceded     0.003716 0.003257
+   diff_total_scoring_att     0.002984 0.002134
+             diff_touches     0.002881 0.001554
+diff_ontarget_scoring_att     0.002857 0.001211
+              diff_losses     0.002534 0.006028
+          diff_total_pass     0.002140 0.001616
+       diff_att_ibox_goal     0.001382 0.001674
+       diff_att_obox_goal     0.001372 0.000679
+  diff_pen_goals_conceded     0.001244 0.000688
+
+--- SHAP Local ---
+SHAP nao instalado. Pulando.
+
+=== 9. DOCUMENTACAO DAS MUDANCAS ===
+
+MELHORIAS IMPLEMENTADAS NO PIPELINE DE CLASSIFICACAO
+=====================================================
+
+[A] LEAKAGE TEMPORAL TRATADO
+    - Antes: stats acumuladas da temporada inteira (leakage para partidas no inicio)
+    - Depois: stats da TEMPORADA ANTERIOR como proxy de forma
+    - Justificativa: metodologicamente correto, nao "ve o futuro"
+    - Nota: perde informacao sobre times promovidos/rebaixados
+
+[B] MISSING VALUES TRATADOS
+    - Removidas features com >30% missing (backward_pass, big_chance_missed)
+    - Restante imputado com mediana por temporada
+    - Justificativa: evita perda silenciosa de 33% dos dados
+
+[C] FEATURE ENGINEERING AVANCADO
+    - diff_forma_5: media de pontos nos ultimos 5 jogos (momentum)
+    - diff_gf_5, diff_ga_5: gols feitos/sofridos nos ultimos 5 jogos
+    - hh_wins_home: vitorias do mandante no head-to-head recente
+    - hh_goals_diff: saldo de gols no head-to-head
+    - rodada: numero da rodada na temporada
+    - fase_temporada: Inicio/Meio/Final (dinamicas diferentes)
+
+[D] VALIDACAO MELHORADA
+    - Antes: CV 5-fold aleatorio (invalido em series temporais)
+    - Depois: TimeSeriesSplit (walk-forward validation)
+    - Justificativa: respeita ordem temporal, simula cenario real
+
+[E] MODELOS E METRICAS ADICIONAIS
+    - HistGradientBoostingClassifier (nativo scikit-learn)
+    - CalibratedClassifierCV (probabilidades calibradas)
+    - AUC-PR (melhor que AUC-ROC para classes desbalanceadas)
+    - Brier score (calibracao de probabilidades)
+
+[F] INTERPRETABILIDADE APROFUNDADA
+    - SHAP waterfall para partidas especificas
+    - Curvas Precision-Recall
+    - Matriz de confusao por modelo
+
+
+=== CONCLUIDO ===
+Todos os artefatos do pipeline melhorado gerados em:
+  - modelagem_melhorada/resultados/
+  - interpretabilidade_melhorada/
+  - PROCESSAMENTO_MELHORADO/
+  - README_MELHORIAS_CLASSIFICACAO.md

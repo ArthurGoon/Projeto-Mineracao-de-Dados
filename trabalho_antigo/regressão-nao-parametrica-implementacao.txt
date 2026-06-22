@@ -1,0 +1,226 @@
+---
+title: "KNN, Nadaraya-Watson e Regressão Polinomial"
+subtitle: "Mineração de Dados --- DEs/UFSCar"
+format:
+  html:
+    toc: true
+    code-fold: false
+    theme: cosmo
+    fig-width: 8
+    fig-height: 5
+  pdf:
+    toc: false
+execute:
+  warning: false
+  message: false
+---
+
+## Contexto
+
+Três estimadores não-paramétricos da função de regressão
+$\psi(x) = \mathbb{E}[Y \mid X = x]$ serão comparados em um conjunto de dados:
+
+- **KNN**: média local dos $k$ vizinhos mais próximos.
+- **Nadaraya-Watson**: média local ponderada por um kernel com largura de banda $h$.
+- **Regressão polinomial**: ajuste global de grau $d$ por mínimos quadrados.
+
+Os três métodos têm **um hiperparâmetro de complexidade** ($k$, $h$, $d$) que
+controla o trade-off viés-variância. Selecionamos cada um por **validação
+cruzada $K$-fold** ($K = 10$) e comparamos o EQM de teste em uma partição
+80/20.
+
+O dataset é `mcycle` (pacote `MASS`): aceleração da cabeça ($Y$, em $g$), mede a força que a cabeça recebe durante o impacto, medida em um impacto simulado de motocicleta em função do tempo após o início do impacto ($X$, em ms). Possui não-linearidade forte, heterocedasticidade e mudanças abruptas de curvatura. 
+
+## Pacotes e dados
+
+```{r}
+#| label: setup
+library(MASS)
+library(FNN)
+library(tidyverse)
+
+set.seed(123)
+
+data(mcycle)
+df <- mcycle |>
+  rename(x = times, y = accel)
+
+ggplot(df, aes(x, y)) +
+  geom_point(alpha = 0.7) +
+  labs(x = "Tempo após impacto (ms)",
+       y = "Aceleração da cabeça (g)",
+       title = "Dataset mcycle") +
+  theme_minimal()
+
+n <- nrow(df)
+idx_test <- sample(seq_len(n), size = round(0.2 * n))
+treino <- df[-idx_test, ]
+teste  <- df[ idx_test, ]
+
+```
+
+## Funções auxiliares
+
+```{r}
+#| label: funções úteis
+
+# EQM
+eqm <- function(y, yhat) mean((y - yhat)^2)
+
+# Nadaraya-Watson com kernel gaussiano
+nw_fit <- function(x_train, y_train, x_new, h) {
+  sapply(x_new, function(x0) {
+    w <- dnorm((x_train - x0) / h)
+    sum(w * y_train) / sum(w)
+  })
+}
+
+# kNN para regressão
+knn_fit <- function(x_train, y_train, x_new, k) {
+  FNN::knn.reg(train = matrix(x_train, ncol = 1),
+               test  = matrix(x_new, ncol = 1),
+               y = y_train, k = k)$pred
+}
+
+# regressão polinomial
+poly_fit <- function(x_train, y_train, x_new, d) {
+  df_tr <- data.frame(x = x_train, y = y_train)
+  fit   <- lm(y ~ poly(x, degree = d), data = df_tr)
+  predict(fit, newdata = data.frame(x = x_new))
+}
+```
+
+## Validação cruzada para seleção de hiperparâmetros
+
+Implementamos um CV $K$-fold genérico que recebe uma função de ajuste/predição e um grid de hiperparâmetros.
+
+```{r}
+#| label: cv
+
+cv_kfold <- function(x, y, K, grid, fit_pred_fn) {
+  n <- length(x)
+  folds <- sample(rep(seq_len(K), length.out = n))
+
+  resultados <- map_dfr(grid, function(par) {
+    erros <- map_dbl(seq_len(K), function(k) {
+      in_val <- folds == k
+      yhat <- fit_pred_fn(x[!in_val], y[!in_val], x[in_val], par)
+      eqm(y[in_val], yhat)
+    })
+    tibble(par = par, eqm_cv = mean(erros))
+  })
+  resultados
+}
+
+x_tr <- treino$x; y_tr <- treino$y
+
+# grids de hiperparâmetros
+grid_k <- seq(2, 30, by = 1)
+grid_h <- seq(0.5, 10, by = 0.1)
+grid_d <- 1:15
+
+cv_knn  <- cv_kfold(x_tr, y_tr, K = 10, grid = grid_k,
+                    fit_pred_fn = knn_fit)
+cv_nw   <- cv_kfold(x_tr, y_tr, K = 10, grid = grid_h,
+                    fit_pred_fn = nw_fit)
+cv_poly <- cv_kfold(x_tr, y_tr, K = 10, grid = grid_d,
+                    fit_pred_fn = poly_fit)
+
+# escolhas ótimas
+k_opt <- cv_knn$par [ which.min(cv_knn$eqm_cv)  ]
+h_opt <- cv_nw$par  [ which.min(cv_nw$eqm_cv)   ]
+d_opt <- cv_poly$par[ which.min(cv_poly$eqm_cv) ]
+
+cat("k ótimo (KNN):           ", k_opt, "\n")
+cat("h ótimo (Nadaraya-Watson):", h_opt, "\n")
+cat("d ótimo (polinomial):     ", d_opt, "\n")
+```
+
+### Curvas de CV
+
+```{r}
+#| label: fig-cv
+#| fig-cap: "EQM de validação cruzada em função do hiperparâmetro."
+
+p_knn <- ggplot(cv_knn, aes(par, eqm_cv)) +
+  geom_line() + geom_point() +
+  geom_vline(xintercept = k_opt, linetype = 2, color = "red") +
+  labs(title = "KNN", x = "k", y = "EQM CV") + theme_minimal()
+
+p_nw <- ggplot(cv_nw, aes(par, eqm_cv)) +
+  geom_line() + geom_point() +
+  geom_vline(xintercept = h_opt, linetype = 2, color = "red") +
+  labs(title = "Nadaraya-Watson", x = "h (largura de banda)", y = "EQM CV") +
+  theme_minimal()
+
+p_poly <- ggplot(cv_poly, aes(par, eqm_cv)) +
+  geom_line() + geom_point() +
+  geom_vline(xintercept = d_opt, linetype = 2, color = "red") +
+  labs(title = "Polinomial", x = "grau d", y = "EQM CV") + theme_minimal()
+
+gridExtra::grid.arrange(p_knn, p_nw, p_poly, nrow = 1)
+```
+
+## Ajuste final e comparação
+
+```{r}
+#| label: ajustes-finais
+
+# grid fino para desenhar as curvas
+xg <- seq(min(df$x), max(df$x), length.out = 400)
+
+pred_knn  <- knn_fit (x_tr, y_tr, xg, k_opt)
+pred_nw   <- nw_fit  (x_tr, y_tr, xg, h_opt)
+pred_poly <- poly_fit(x_tr, y_tr, xg, d_opt)
+
+# EQM no conjunto de teste
+eqm_teste <- tibble(
+  Método = c("KNN", "Nadaraya-Watson", "Polinomial"),
+  Hiperparâmetro = c(sprintf("k = %d", k_opt),
+                     sprintf("h = %.2f", h_opt),
+                     sprintf("d = %d", d_opt)),
+  EQM_teste = c(
+    eqm(teste$y, knn_fit (x_tr, y_tr, teste$x, k_opt)),
+    eqm(teste$y, nw_fit  (x_tr, y_tr, teste$x, h_opt)),
+    eqm(teste$y, poly_fit(x_tr, y_tr, teste$x, d_opt))
+  )
+)
+knitr::kable(eqm_teste, digits = 2)
+```
+
+```{r}
+#| label: fig-comparacao
+#| fig-cap: "Três estimadores de $\\psi$ ajustados no treino, sobrepostos aos dados."
+
+curvas <- tibble(
+  x = rep(xg, 3),
+  yhat = c(pred_knn, pred_nw, pred_poly),
+  Método = rep(c("KNN", "Nadaraya-Watson", "Polinomial"),
+               each = length(xg))
+)
+
+ggplot() +
+  geom_point(data = treino, aes(x, y), alpha = 0.4, color = "grey40") +
+  geom_point(data = teste,  aes(x, y), color = "black", shape = 17, size = 2) +
+  geom_line (data = curvas, aes(x, yhat, color = Método), linewidth = 1) +
+  scale_color_manual(values = c("KNN"              = "#E41A1C",
+                                "Nadaraya-Watson"  = "#377EB8",
+                                "Polinomial"       = "#4DAF4A")) +
+  labs(x = "Tempo (ms)", y = "Aceleração (g)",
+       caption = "Círculos cinzas: treino. Triângulos pretos: teste.") +
+  theme_minimal()
+```
+
+## Conclusões
+
+- **KNN** produz uma curva em degraus, o estimador é constante por partes,
+  já que depende apenas da média dos $k$ vizinhos mais próximos. Responde
+  rapidamente a mudanças locais, mas a rugosidade é um artefato do estimador, não do fenômeno.
+
+- **Nadaraya-Watson** com núcleo gaussiano produz uma curva suave. A largura de banda $h$ desempenha papel análogo a $k$ no KNN. É o melhor dos três quando a função verdadeira é suave mas não polinomial, como neste caso.
+
+- **Polinomial** falha em capturar a dinâmica local porque é um ajuste
+  *global*: aumentar $d$ para capturar a oscilação entre 15 e 30 ms gera
+  oscilações espúrias nas extremidades (fenômeno de Runge). Este é o   exemplo canônico em que "mais grau" não resolve, precisa-se de localidade.
+
+A ordenação típica de EQM de teste neste dataset é NW $\lesssim$ KNN $\ll$ Polinomial, confirmando que **localidade** é mais importante que **flexibilidade global** quando a função tem estrutura rica.

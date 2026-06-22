@@ -1,0 +1,255 @@
+======================================================================
+AUDITORIA DE QUALIDADE DE DADOS - CLASSIFICACAO PREMIER LEAGUE
+======================================================================
+
+======================================================================
+1. CARREGAMENTO E INSPECAO INICIAL
+======================================================================
+Results: 4560 partidas x 6 colunas
+Stats: 240 registros x 42 colunas
+Results cols: ['home_team', 'away_team', 'home_goals', 'away_goals', 'result', 'season']
+Stats cols: ['team', 'wins', 'losses', 'goals', 'total_yel_card', 'total_red_card', 'total_scoring_att', 'ontarget_scoring_att', 'hit_woodwork', 'att_hd_goal', 'att_pen_goal', 'att_freekick_goal', 'att_ibox_goal', 'att_obox_goal', 'goal_fastbreak', 'total_offside', 'clean_sheet', 'goals_conceded', 'saves', 'outfielder_block', 'interception', 'total_tackle', 'last_man_tackle', 'total_clearance', 'head_clearance', 'own_goals', 'penalty_conceded', 'pen_goals_conceded', 'total_pass', 'total_through_ball', 'total_long_balls', 'backward_pass', 'total_cross', 'corner_taken', 'touches', 'big_chance_missed', 'clearance_off_line', 'dispossessed', 'penalty_save', 'total_high_claim', 'punches', 'season']
+Duplicatas results: 0
+Duplicatas stats: 0
+
+======================================================================
+2. ANALISE DO TARGET (HomeWin)
+======================================================================
+
+Distribuicao dos resultados:
+result
+H    2108
+A    1288
+D    1164
+Name: count, dtype: int64
+
+Taxa de vitoria do mandante: 0.462
+
+Taxa de vitoria casa por temporada:
+season
+2006-2007    0.478947
+2007-2008    0.463158
+2008-2009    0.455263
+2009-2010    0.507895
+2010-2011    0.471053
+2011-2012    0.450000
+2012-2013    0.436842
+2013-2014    0.471053
+2014-2015    0.452632
+2015-2016    0.413158
+2016-2017    0.492105
+2017-2018    0.455263
+
+======================================================================
+3. ANALISE DE MISSING VALUES
+======================================================================
+
+Missing values em results:
+  Nenhum
+
+Missing values em stats:
+big_chance_missed     80
+backward_pass         80
+head_clearance        20
+saves                 20
+total_through_ball    20
+dispossessed          20
+
+Detalhamento:
+  big_chance_missed: 80/240 (33.3%)
+  backward_pass: 80/240 (33.3%)
+  head_clearance: 20/240 (8.3%)
+  saves: 20/240 (8.3%)
+  total_through_ball: 20/240 (8.3%)
+  dispossessed: 20/240 (8.3%)
+
+======================================================================
+4. AUDITORIA DO MERGE RESULTS x STATS
+======================================================================
+
+Combinacoes team-season em results nao encontradas em stats:
+  Home: 0
+  Away: 0
+
+Linhas em results: 4560
+Linhas apos merge: 4560
+Linhas com missing em home stats: 0
+Linhas com missing em away stats: 0
+Linhas com QUALQUER missing pos-merge: 1520
+
+Linhas ANTES de dropna: 4560
+Linhas APOS dropna (como no pipeline): 3040
+Linhas PERDIDAS: 1520 (33.3%)
+
+======================================================================
+5. DIAGNOSTICO DE LEAKAGE TEMPORAL
+======================================================================
+
+PROBLEMA CRITICO: As estatisticas em 'stats.csv' sao ACUMULADAS POR TEMPORADA.
+Isso significa que:
+- Uma partida em OUTUBRO (rodada 8) usa stats de 38 jogos (temporada inteira)
+- Uma partida em MAIO (rodada 38) usa stats de... 38 jogos (mesmo valor!)
+
+ISSO E LEAKAGE TEMPORAL: ao prever o resultado de uma partida no inicio da
+temporada, o modelo "ve" o desempenho do time ao longo de TODA a temporada,
+incluindo jogos que ainda nao aconteceram.
+
+Impacto: o modelo APRENDE do futuro, superestimando a performance preditiva.
+
+--- Variacao das stats 'wins' por time (temporada 2017-2018) ---
+All teams have same 'wins' count regardless of match date: SIM (acumulado)
+Wins em 2017-2018:
+             team  wins
+  Manchester City  32.0
+Manchester United  25.0
+Tottenham Hotspur  23.0
+          Chelsea  21.0
+        Liverpool  21.0
+          Arsenal  19.0
+          Burnley  14.0
+          Everton  13.0
+   Leicester City  12.0
+ Newcastle United  12.0
+
+======================================================================
+6. CONSISTENCIA DOS DADOS
+======================================================================
+
+Partidas onde gols nao batem com resultado: 0
+
+Times com wins + losses != 38 (excluindo empates):
+  Total: 240 (na Premier League sao 38 jogos)
+
+Duplicatas de team-season em stats: 0
+
+======================================================================
+7. BALANCEAMENTO TEMPORAL
+======================================================================
+
+Partidas por temporada:
+season
+2006-2007    380
+2007-2008    380
+2008-2009    380
+2009-2010    380
+2010-2011    380
+2011-2012    380
+2012-2013    380
+2013-2014    380
+2014-2015    380
+2015-2016    380
+2016-2017    380
+2017-2018    380
+
+Divisao temporal do pipeline:
+  Treino: 3800 partidas (2006-2007 a 2015-2016)
+  Teste: 760 partidas (2016-2017 a 2017-2018)
+  Taxa vitoria casa (treino): 0.460
+  Taxa vitoria casa (teste): 0.474
+
+Jogos por temporada (esperado: 380):
+season
+2006-2007    380
+2007-2008    380
+2008-2009    380
+2009-2010    380
+2010-2011    380
+2011-2012    380
+2012-2013    380
+2013-2014    380
+2014-2015    380
+2015-2016    380
+2016-2017    380
+2017-2018    380
+Temporadas com != 380 jogos: 0
+
+======================================================================
+8. ANALISE DAS FEATURES DIFERENCIAIS (pos-merge)
+======================================================================
+Numero de features diferenciais: 39
+Shape final apos dropna: (3040, 39)
+
+Estatisticas das features diferenciais:
+                            count  mean      std      min      25%  50%      75%      max
+diff_wins                  3040.0   0.0     8.65    -26.0    -6.00  0.0     6.00     26.0
+diff_losses                3040.0   0.0     7.87    -24.0    -5.00  0.0     5.00     24.0
+diff_total_yel_card        3040.0   0.0    12.95    -46.0    -9.00  0.0     9.00     46.0
+diff_total_red_card        3040.0   0.0     2.46     -9.0    -2.00  0.0     2.00      9.0
+diff_total_scoring_att     3040.0   0.0   129.31   -362.0   -87.00  0.0    87.00    362.0
+diff_ontarget_scoring_att  3040.0   0.0    56.01   -162.0   -37.00  0.0    37.00    162.0
+diff_hit_woodwork          3040.0   0.0     6.97    -26.0    -5.00  0.0     5.00     26.0
+diff_att_hd_goal           3040.0   0.0     5.10    -16.0    -4.00  0.0     4.00     16.0
+diff_att_pen_goal          3040.0   0.0     2.85     -9.0    -2.00  0.0     2.00      9.0
+diff_att_freekick_goal     3040.0   0.0     1.82     -6.0    -1.00  0.0     1.00      6.0
+diff_att_ibox_goal         3040.0   0.0    20.61    -69.0   -12.00  0.0    12.00     69.0
+diff_att_obox_goal         3040.0   0.0     5.04    -17.0    -3.00  0.0     3.00     17.0
+diff_goal_fastbreak        3040.0   0.0     2.90     -9.0    -2.00  0.0     2.00      9.0
+diff_total_offside         3040.0   0.0    22.55    -73.0   -15.00  0.0    15.00     73.0
+diff_clean_sheet           3040.0   0.0     5.45    -17.0    -4.00  0.0     4.00     17.0
+diff_goals_conceded        3040.0   0.0    18.09    -58.0   -13.00  0.0    13.00     58.0
+diff_saves                 3040.0   0.0    25.50   -112.0    -9.00  0.0     9.00    112.0
+diff_outfielder_block      3040.0   0.0    45.96   -156.0   -32.00  0.0    32.00    156.0
+diff_interception          3040.0   0.0   122.34   -402.0   -80.00  0.0    80.00    402.0
+diff_total_tackle          3040.0   0.0    86.42   -273.0   -57.25  0.0    57.25    273.0
+diff_last_man_tackle       3040.0   0.0     5.37    -24.0    -3.00  0.0     3.00     24.0
+diff_total_clearance       3040.0   0.0   262.17  -1190.0  -168.00  0.0   168.00   1190.0
+diff_head_clearance        3040.0   0.0   161.33   -599.0  -106.00  0.0   106.00    599.0
+diff_own_goals             3040.0   0.0     2.17     -6.0    -1.00  0.0     1.00      6.0
+diff_penalty_conceded      3040.0   0.0     3.15    -11.0    -2.00  0.0     2.00     11.0
+diff_pen_goals_conceded    3040.0   0.0     2.66    -10.0    -2.00  0.0     2.00     10.0
+diff_total_pass            3040.0   0.0  4490.82 -15349.0 -3049.50  0.0  3049.50  15349.0
+diff_total_through_ball    3040.0   0.0    76.87   -319.0   -34.00  0.0    34.00    319.0
+diff_total_long_balls      3040.0   0.0   349.78  -1272.0  -206.00  0.0   206.00   1272.0
+diff_backward_pass         3040.0   0.0   684.91  -2567.0  -459.25  0.0   459.25   2567.0
+diff_total_cross           3040.0   0.0   138.10   -493.0   -93.00  0.0    93.00    493.0
+diff_corner_taken          3040.0   0.0    51.83   -148.0   -36.00  0.0    36.00    148.0
+diff_touches               3040.0   0.0  4512.11 -14762.0 -3172.00  0.0  3172.00  14762.0
+diff_big_chance_missed     3040.0   0.0    17.95    -61.0   -10.00  0.0    10.00     61.0
+diff_clearance_off_line    3040.0   0.0     3.83    -14.0    -2.00  0.0     2.00     14.0
+diff_dispossessed          3040.0   0.0    88.04   -292.0   -58.00  0.0    58.00    292.0
+diff_penalty_save          3040.0   0.0     1.28     -4.0    -1.00  0.0     1.00      4.0
+diff_total_high_claim      3040.0   0.0    22.47    -78.0   -15.00  0.0    15.00     78.0
+diff_punches               3040.0   0.0    12.03    -61.0    -7.00  0.0     7.00     61.0
+
+Features com variancia < 0.001: 0
+
+======================================================================
+9. RECOMENDACOES (RESUMO)
+======================================================================
+
+[A] LEAKAGE TEMPORAL (CRITICO):
+    - As stats sao acumuladas na temporada inteira. Isso cria leakage para
+      partidas no inicio da temporada.
+    - SOLUCAO: para cada partida, calcular stats ACUMULADAS ATE AQUELA RODADA.
+      Isso requer dados por rodada (nao disponiveis atualmente).
+    - ALTERNATIVA IMEDIATA: usar stats da TEMPORADA ANTERIOR como proxy de
+      forma (mas perde jogadores novos, rebaixados/promovidos).
+
+[B] MISSING VALUES:
+    - backward_pass (80/240 = 33.3%), big_chance_missed (80/240 = 33.3%)
+    - total_through_ball (20/240 = 8.3%), dispossessed (20/240 = 8.3%)
+    - SOLUCAO: imputar com mediana ou KNN; ou remover features com >30% missing.
+
+[C] LINHAS PERDIDAS NO DROPNA:
+    - O pipeline dropna silenciosamente perde linhas.
+    - SOLUCAO: imputar missing antes de criar features diferenciais.
+
+[D] FEATURE ENGINEERING FALTANTE:
+    - Forma recente (ultimos 5 jogos) — o preditor mais importante no futebol.
+    - Posicao na tabela acumulada ate aquela rodada.
+    - Head-to-head historico entre os times.
+    - Rodada da temporada (inicio vs final tem dinamicas diferentes).
+    - Desempenho em casa vs fora separado (nao so diferencial).
+    - Fase da temporada (inicio/meio/final).
+
+[E] VALIDACAO:
+    - CV 5-fold aleatorio em dados temporais e incorreto.
+    - SOLUCAO: usar walk-forward validation ou time-series split.
+
+[F] FEATURE SELECTION:
+    - Lasso zerou 36/39 features; pode ser muito agressivo.
+    - SOLUCAO: usar RFECV ou testar diferentes valores de C no Lasso.
+
+
+Relatorio salvo em: auditoria_dados/relatorios/auditoria_classificacao.txt
+======================================================================

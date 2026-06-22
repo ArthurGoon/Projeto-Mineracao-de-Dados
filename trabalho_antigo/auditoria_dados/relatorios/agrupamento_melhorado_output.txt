@@ -1,0 +1,153 @@
+/home/arthur/.local/lib/python3.12/site-packages/matplotlib/projections/__init__.py:63: UserWarning: Unable to import Axes3D. This may be due to multiple versions of Matplotlib being installed (e.g. as a system package and as a pip package). As a result, the 3D projection is not available.
+  warnings.warn("Unable to import Axes3D. This may be due to multiple versions of "
+=== 1. LEITURA E LIMPEZA ===
+Players: (462, 3)
+Serve: (237185, 17)
+Return: (237196, 17)
+Raw: (237205, 17)
+
+=== 2. AGREGACAO POR JOGADOR E SUPERFICIE ===
+
+[A] AGREGACAO POR SUPERFICIE:
+   Superficies encontradas: ['Hard' 'Grass' 'Clay' 'Carpet']
+
+[B] FEATURES COMPOSTAS:
+   Serve_efficiency = Aces_pct / (Df_pct + 0.1)
+   Return_dominance = ReturnPoints_Won / (vAces_pct + 0.1)
+   Serve_consistency = FirstServe_In * SecondServe_Win / 100
+   BP_efficiency = BP_Converted_rate / (BP_Saved_rate + 0.1)
+   Hard_Clay_specialization = Aces_pct_Hard / (Aces_pct_Clay + 0.1)
+
+Jogadores com stats completas: 462
+
+=== 3. FILTRO E SELECAO DE FEATURES ===
+Apos filtro (>= 20 partidas): 98 jogadores
+Features finais: 24
+['Aces_pct', 'Df_pct', 'FirstServe_In', 'FirstServe_Win', 'SecondServe_Win', 'TotalPoints_Won', 'ReturnPoints_Won', 'vAces_pct', 'v1stReturn_Win', 'v2ndReturn_Win', 'BP_Saved_rate', 'BP_Converted_rate', 'Serve_efficiency', 'Return_dominance', 'Serve_consistency', 'BP_efficiency', 'Aces_pct_Hard', 'ReturnPoints_Won_Hard', 'Aces_pct_Grass', 'ReturnPoints_Won_Grass', 'Aces_pct_Clay', 'ReturnPoints_Won_Clay', 'Aces_pct_Carpet', 'ReturnPoints_Won_Carpet']
+
+=== 4. PADRONIZACAO ===
+
+=== 5. ESCOLHA DE K E METRICAS ADICIONAIS ===
+K=2: Silhouette=0.2388, Calinski=38.2, DB=1.460
+K=3: Silhouette=0.2201, Calinski=26.5, DB=1.364
+K=4: Silhouette=0.1495, Calinski=21.5, DB=1.908
+K=5: Silhouette=0.1551, Calinski=20.0, DB=1.540
+K=6: Silhouette=0.1461, Calinski=18.9, DB=1.635
+K=7: Silhouette=0.1439, Calinski=17.6, DB=1.631
+K=8: Silhouette=0.1323, Calinski=16.9, DB=1.596
+K=9: Silhouette=0.1353, Calinski=15.7, DB=1.550
+K=10: Silhouette=0.1045, Calinski=14.4, DB=1.599
+
+Melhor K (Silhouette): 2
+Melhor K (Calinski): 2
+Melhor K (Davies-Bouldin): 3
+K escolhido para analise: 2
+
+=== 6. ALGORITMOS DE CLUSTERING ===
+
+K-Means (K=2): Silhouette=0.2388
+
+--- Gaussian Mixture Model (NOVO) ---
+GMM (K=2): Silhouette=0.2308
+   Media da maxima probabilidade: 1.000
+
+--- DBSCAN (NOVO) ---
+   eps heuristico (P90 da 5a distancia): 5.039
+   DBSCAN: 1 clusters, 8 outliers (8.2%)
+
+--- Agrupamento Hierarquico ---
+
+=== 7. ESTABILIDADE DOS CLUSTERS (Bootstrap) ===
+Bootstrap (n=50, 80% amostra):
+   Silhouette medio: 0.2389 (+/- 0.0104)
+   Intervalo 95%: [0.2190, 0.2551]
+
+=== 8. INTERPRETABILIDADE APROFUNDADA ===
+
+--- Centroides K-Means (padronizados) ---
+           Aces_pct  Df_pct  FirstServe_In  FirstServe_Win  SecondServe_Win  TotalPoints_Won  ReturnPoints_Won  vAces_pct  v1stReturn_Win  v2ndReturn_Win  BP_Saved_rate  BP_Converted_rate  Serve_efficiency  Return_dominance  Serve_consistency  BP_efficiency  Aces_pct_Hard  ReturnPoints_Won_Hard  Aces_pct_Grass  ReturnPoints_Won_Grass  Aces_pct_Clay  ReturnPoints_Won_Clay  Aces_pct_Carpet  ReturnPoints_Won_Carpet
+Cluster 0      0.85    0.22          -0.39            0.83             0.04            -0.10             -0.84       0.15           -0.74           -0.84           0.52              -0.86              0.76             -0.31              -0.24          -0.92           0.82                  -0.52            0.87                   -0.31           0.83                  -0.77             0.45                    -0.19
+Cluster 1     -0.61   -0.16           0.28           -0.59            -0.03             0.07              0.60      -0.11            0.53            0.60          -0.37               0.62             -0.55              0.22               0.17           0.66          -0.59                   0.38           -0.62                    0.22          -0.60                   0.56            -0.33                     0.13
+
+--- Profiling Estatistico Formal ---
+   Profiling salvo em profiling_estatistico.csv
+
+   Cluster 0 - Top 5 features discriminantes (Cohen's d):
+          Feature  Cluster_Mean  Other_Mean  Cohens_d
+    BP_efficiency      0.590810    0.663331 -2.444759
+BP_Converted_rate      0.395287    0.432566 -2.130071
+   Aces_pct_Grass     12.380393    6.449548  2.113597
+ ReturnPoints_Won     36.469059   39.641759 -2.004091
+   v2ndReturn_Win     48.651732   51.953768 -1.982485
+
+   Cluster 1 - Top 5 features discriminantes (Cohen's d):
+          Feature  Cluster_Mean  Other_Mean  Cohens_d
+    BP_efficiency      0.663331    0.590810  2.444759
+BP_Converted_rate      0.432566    0.395287  2.130071
+   Aces_pct_Grass      6.449548   12.380393 -2.113597
+ ReturnPoints_Won     39.641759   36.469059  2.004091
+   v2ndReturn_Win     51.953768   48.651732  1.982485
+
+--- Comparacao com Ranking ATP ---
+   Cluster 0: Rk medio=181.8 vs Outros=202.1 (p=0.1602)
+   Cluster 1: Rk medio=202.1 vs Outros=181.8 (p=0.1602)
+
+--- Jogadores de Fronteira ---
+   Jogadores de fronteira (ratio < 1.35): 21
+            Name  Cluster_KMeans  Aces_pct  ReturnPoints_Won
+Alexander Zverev               1 10.629055         38.727221
+   Andrey Rublev               0  8.915683         38.633540
+     Arthur Fils               1  7.134762         38.210900
+    Benoit Paire               0 10.047945         38.526171
+ Daniil Medvedev               1 10.429280         40.493120
+   Dusan Lajovic               1  4.980026         37.490407
+    Gael Monfils               0 10.588530         38.368931
+     Jack Draper               0 11.776471         38.900000
+    Jiri Lehecka               0  7.086090         37.199248
+      Joao Sousa               1  4.526953         37.740442
+
+--- t-SNE ---
+   t-SNE gerado com sucesso.
+
+--- GMM Soft Clustering ---
+   Jogadores com baixa confianca GMM (< 0.7): 0
+
+=== 9. DENDROGRAMA ===
+
+=== 10. DOCUMENTACAO ===
+
+MELHORIAS IMPLEMENTADAS NO PIPELINE DE AGRUPAMENTO
+====================================================
+
+[A] FEATURES POR SUPERFICIE
+    - Agregacao separada por Hard, Clay, Grass
+    - Hard_Clay_specialization: ratio de aces em hard vs clay
+    - Justificativa: estilo de jogo muda drasticamente entre superficies
+
+[B] FEATURES COMPOSTAS
+    - Serve_efficiency = Aces / (Df + 0.1): risco vs recompensa do saque
+    - Return_dominance = ReturnPoints / (vAces + 0.1): dominancia na devolucao
+    - Serve_consistency = 1stIn * 2ndWin: consistencia do saque
+    - BP_efficiency = BP_Converted / (BP_Saved + 0.1): eficiencia em break points
+
+[C] NOVOS ALGORITMOS
+    - Gaussian Mixture Model (GMM): soft clustering com probabilidades
+    - DBSCAN: detecta outliers e jogadores hibridos
+
+[D] METRICAS ADICIONAIS
+    - Calinski-Harabasz: separacao entre clusters (maior=melhor)
+    - Davies-Bouldin: compacidade e separacao (menor=melhor)
+    - Bootstrap de estabilidade: verifica se clusters sao robustos
+
+[E] INTERPRETABILIDADE APROFUNDADA
+    - Profiling estatistico formal: testes t e Cohen's d por feature
+    - Comparacao com ranking ATP: teste de Mann-Whitney
+    - Jogadores de fronteira: proximos a ambos os centroides
+    - t-SNE: visualizacao nao-linear alem do PCA
+    - GMM soft clustering: probabilidade de pertencimento
+
+
+=== CONCLUIDO ===
+Clusters identificados: 2
+Jogadores analisados: 98
+Todos os artefatos do pipeline melhorado gerados.

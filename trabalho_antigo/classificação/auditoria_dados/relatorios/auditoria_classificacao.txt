@@ -1,0 +1,54 @@
+AUDITORIA CLASSIFICACAO PREMIER LEAGUE
+======================================================================
+
+Results: (4560, 10)
+Stats: (240, 43)
+
+--- MISSING STATS ---
+big_chance_missed     80
+backward_pass         80
+head_clearance        20
+saves                 20
+total_through_ball    20
+dispossessed          20
+
+--- MERGE ---
+Linhas perdidas no dropna: 1520
+
+--- LEAKAGE TEMPORAL ---
+Stats acumuladas por temporada inteira -> leakage para partidas no inicio
+
+--- RECOMENDACOES ---
+
+[A] LEAKAGE TEMPORAL (CRITICO):
+    - As stats sao acumuladas na temporada inteira. Isso cria leakage para
+      partidas no inicio da temporada.
+    - SOLUCAO: para cada partida, calcular stats ACUMULADAS ATE AQUELA RODADA.
+      Isso requer dados por rodada (nao disponiveis atualmente).
+    - ALTERNATIVA IMEDIATA: usar stats da TEMPORADA ANTERIOR como proxy de
+      forma (mas perde jogadores novos, rebaixados/promovidos).
+
+[B] MISSING VALUES:
+    - backward_pass (80/240 = 33.3%), big_chance_missed (80/240 = 33.3%)
+    - total_through_ball (20/240 = 8.3%), dispossessed (20/240 = 8.3%)
+    - SOLUCAO: imputar com mediana ou KNN; ou remover features com >30% missing.
+
+[C] LINHAS PERDIDAS NO DROPNA:
+    - O pipeline dropna silenciosamente perde linhas.
+    - SOLUCAO: imputar missing antes de criar features diferenciais.
+
+[D] FEATURE ENGINEERING FALTANTE:
+    - Forma recente (ultimos 5 jogos) — o preditor mais importante no futebol.
+    - Posicao na tabela acumulada ate aquela rodada.
+    - Head-to-head historico entre os times.
+    - Rodada da temporada (inicio vs final tem dinamicas diferentes).
+    - Desempenho em casa vs fora separado (nao so diferencial).
+    - Fase da temporada (inicio/meio/final).
+
+[E] VALIDACAO:
+    - CV 5-fold aleatorio em dados temporais e incorreto.
+    - SOLUCAO: usar walk-forward validation ou time-series split.
+
+[F] FEATURE SELECTION:
+    - Lasso zerou 36/39 features; pode ser muito agressivo.
+    - SOLUCAO: usar RFECV ou testar diferentes valores de C no Lasso.

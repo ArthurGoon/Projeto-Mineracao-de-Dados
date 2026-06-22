@@ -1,0 +1,463 @@
+name,number_of_matches,playing_years
+Jannik Sinner,201,"[2019, 2020, 2021, 2022, 2023, 2024]"
+Carlos Alcaraz,174,"[2019, 2020, 2021, 2022, 2023, 2024]"
+Alexander Zverev,281,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Novak Djokovic,577,"[2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Daniil Medvedev,286,"[2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Taylor Fritz,115,"[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Andrey Rublev,188,"[2015, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Casper Ruud,169,"[2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Grigor Dimitrov,172,"[2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Alex De Minaur,113,"[2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Stefanos Tsitsipas,210,"[2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Tommy Paul,72,"[2016, 2017, 2019, 2020, 2021, 2022, 2023, 2024]"
+Hubert Hurkacz,291,"[2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Holger Rune,68,"[2019, 2021, 2022, 2023, 2024]"
+Frances Tiafoe,72,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Ugo Humbert,52,"[2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Lorenzo Musetti,80,"[2019, 2020, 2021, 2022, 2023, 2024]"
+Jack Draper,26,"[2021, 2022, 2023, 2024]"
+Felix Auger Aliassime,115,"[2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Arthur Fils,40,"[2021, 2023, 2024]"
+Alejandro Tabilo,20,"[2020, 2021, 2022, 2024]"
+Sebastian Korda,50,"[2019, 2020, 2021, 2022, 2023, 2024]"
+Ben Shelton,33,"[2021, 2022, 2023, 2024]"
+Karen Khachanov,98,"[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Alexei Popyrin,27,"[2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Sebastian Baez,55,"[2021, 2022, 2023, 2024]"
+Tomas Machac,22,"[2020, 2022, 2023, 2024]"
+Jiri Lehecka,44,"[2019, 2021, 2022, 2023, 2024]"
+Jordan Thompson,32,"[2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023, 2024]"
+Francisco Cerundolo,41,"[2020, 2021, 2022, 2023, 2024]"
+Flavio Cobolli,16,"[2021, 2022, 2023, 2024]"
+Alexander Bublik,75,"[2016, 2017, 2019, 2020, 2021, 2022, 2023, 2024]"
+Nuno Borges,17,"[2021, 2022, 2023, 2024]"
+Nicolas Jarry,58,"[2017, 2018, 2019, 2020, 2022, 2023, 2024]"
+Tallon Griekspoor,77,"[2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Tomas Martin Etcheverry,20,"[2020, 2022, 2023, 2024]"
+Matteo Arnaldi,20,"[2022, 2023, 2024]"
+Brandon Nakashima,34,"[2020, 2021, 2022, 2023, 2024]"
+Pedro Martinez,27,"[2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Jan Lennard Struff,56,"[2014, 2015, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Matteo Berrettini,98,"[2016, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Luciano Darderi,12,"[2022, 2023, 2024]"
+Alex Michelsen,15,"[2023, 2024]"
+Mariano Navone,13,"[2022, 2024]"
+Roberto Bautista Agut,96,"[2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Zhizhen Zhang,23,"[2019, 2022, 2023, 2024]"
+Juncheng Shang,10,"[2021, 2023, 2024]"
+Marcos Giron,26,"[2013, 2018, 2019, 2021, 2022, 2023, 2024]"
+Lorenzo Sonego,43,"[2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Giovanni Mpetshi Perricard,13,"[2023, 2024]"
+Jakub Mensik,12,"[2022, 2023, 2024]"
+Gael Monfils,133,"[2005, 2006, 2008, 2009, 2010, 2011, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Cameron Norrie,66,"[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+David Goffin,99,"[2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Roberto Carballes Baena,28,"[2015, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Fabian Marozsan,15,"[2021, 2022, 2023, 2024]"
+Adrian Mannarino,80,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Miomir Kecmanovic,47,"[2017, 2019, 2020, 2021, 2022, 2023, 2024]"
+Alexander Shevchenko,17,"[2022, 2023, 2024]"
+Roman Safiullin,17,"[2017, 2019, 2022, 2023, 2024]"
+Arthur Rinderknech,15,"[2020, 2021, 2022, 2023, 2024]"
+Alejandro Davidovich Fokina,54,"[2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Jaume Munar,25,"[2018, 2019, 2021, 2022, 2023, 2024]"
+Yoshihito Nishioka,45,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Zizou Bergs,7,"[2021, 2023, 2024]"
+Facundo Diaz Acosta,6,"[2022, 2023, 2024]"
+Botic Van De Zandschulp,91,"[2019, 2020, 2021, 2022, 2023, 2024]"
+Alexandre Muller,10,"[2019, 2023, 2024]"
+James Duckworth,11,"[2014, 2015, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Corentin Moutet,20,"[2017, 2018, 2019, 2020, 2022, 2023, 2024]"
+Christopher Oconnell,15,"[2015, 2020, 2022, 2023, 2024]"
+Aleksandar Vukic,13,"[2019, 2020, 2022, 2023, 2024]"
+Hugo Gaston,15,"[2020, 2021, 2022, 2023, 2024]"
+Dusan Lajovic,44,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Pavel Kotov,7,"[2020, 2021, 2022, 2023, 2024]"
+Bu Yunchaokete,4,"[2023, 2024]"
+Fabio Fognini,71,"[2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Thiago Seyboth Wild,16,"[2019, 2020, 2021, 2023, 2024]"
+Sebastian Ofner,14,"[2017, 2019, 2022, 2023, 2024]"
+Arthur Cazaux,7,"[2020, 2023, 2024]"
+Sumit Nagal,5,"[2019, 2023, 2024]"
+Daniel Altmaier,13,"[2019, 2020, 2022, 2023, 2024]"
+Rinky Hijikata,9,"[2022, 2023, 2024]"
+Dominik Koepfer,13,"[2018, 2019, 2020, 2021, 2023, 2024]"
+Thanasi Kokkinakis,26,"[2013, 2014, 2015, 2017, 2018, 2021, 2022, 2023, 2024]"
+Emil Ruusuvuori,43,"[2019, 2020, 2021, 2022, 2023, 2024]"
+Gabriel Diallo,4,"[2022, 2024]"
+Marton Fucsovics,46,"[2015, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Taro Daniel,15,"[2014, 2015, 2016, 2017, 2018, 2019, 2022, 2024]"
+Quentin Halys,12,"[2015, 2017, 2022, 2023, 2024]"
+Yannick Hanfmann,16,"[2017, 2018, 2019, 2020, 2021, 2023, 2024]"
+Jacob Fearnley,1,[2024]
+Max Purcell,13,"[2020, 2021, 2022, 2023, 2024]"
+Borna Coric,71,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Denis Shapovalov,95,"[2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Lucas Pouille,45,"[2014, 2015, 2016, 2017, 2018, 2019, 2021, 2024]"
+Francisco Comesana,3,"[2022, 2024]"
+Thiago Monteiro,17,"[2016, 2017, 2019, 2020, 2022, 2023, 2024]"
+Aleksandar Kovacevic,6,"[2021, 2022, 2023, 2024]"
+Luca Nardi,5,"[2022, 2023, 2024]"
+Federico Coria,13,"[2019, 2020, 2021, 2022, 2023, 2024]"
+Mattia Bellucci,4,[2022]
+Adam Walton,2,"[2023, 2024]"
+Damir Dzumhur,23,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022, 2023]"
+Camilo Ugo Carabelli,8,"[2022, 2024]"
+Harold Mayot,1,[2020]
+Hugo Dellien,14,"[2015, 2018, 2019, 2020, 2021, 2022, 2023]"
+Alexander Ritschard,1,[2021]
+Jesper De Jong,14,"[2021, 2023, 2024]"
+Francesco Passaro,2,[2022]
+Mikhail Kukushkin,22,"[2014, 2015, 2017, 2019, 2020, 2021, 2022]"
+Billy Harris,2,"[2022, 2024]"
+Daniel Elahi Galan,11,"[2019, 2020, 2021, 2022, 2023, 2024]"
+Otto Virtanen,7,"[2022, 2023, 2024]"
+Kamil Majchrzak,4,"[2018, 2019]"
+Duje Ajdukovic,3,"[2020, 2023]"
+Luca Van Assche,6,"[2021, 2022, 2023, 2024]"
+Thiago Agustin Tirante,3,"[2020, 2023, 2024]"
+Christopher Eubanks,18,"[2018, 2019, 2022, 2023, 2024]"
+Mackenzie Mcdonald,24,"[2015, 2018, 2019, 2021, 2022, 2023, 2024]"
+Nicolas Moreno De Alboran,1,[2022]
+Benjamin Bonzi,9,"[2020, 2021, 2022, 2023]"
+Pierre Hugues Herbert,22,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2023, 2024]"
+Learner Tien,4,"[2022, 2023, 2024]"
+Chun Hsin Tseng,5,"[2019, 2020, 2022, 2024]"
+Valentin Vacherot,3,"[2023, 2024]"
+Jozef Kovalik,6,"[2015, 2017, 2018, 2019, 2022, 2023]"
+Laslo Djere,39,"[2015, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Roman Andres Burruchaga,1,[2022]
+Lloyd Harris,14,"[2017, 2019, 2020, 2021, 2022, 2023, 2024]"
+Leandro Riedi,5,"[2020, 2022, 2023, 2024]"
+Lukas Klein,3,"[2022, 2023, 2024]"
+Richard Gasquet,94,"[2002, 2005, 2006, 2007, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023, 2024]"
+Facundo Bagnis,11,"[2014, 2015, 2016, 2017, 2021, 2024]"
+Marco Trungelliti,4,"[2015, 2019, 2024]"
+Maximilian Marterer,13,"[2015, 2017, 2018, 2019, 2023, 2024]"
+Albert Ramos,43,"[2012, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]"
+Matteo Gigante,1,[2023]
+Yasutaka Uchiyama,5,"[2015, 2019, 2022, 2023]"
+Jerome Kym,1,[2024]
+Kei Nishikori,116,"[2008, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2023, 2024]"
+Seong Chan Hong,2,"[2023, 2024]"
+Radu Albot,24,"[2014, 2015, 2016, 2017, 2019, 2021, 2022, 2023, 2024]"
+Jaime Faria,1,[2024]
+Coleman Wong,1,[2023]
+Mitchell Krueger,2,"[2013, 2019]"
+Cristian Garin,37,"[2014, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Marc Andrea Huesler,12,"[2019, 2020, 2022, 2023, 2024]"
+Juan Manuel Cerundolo,6,"[2021, 2022, 2023]"
+Vit Kopriva,2,"[2021, 2024]"
+Rafael Nadal,494,"[2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Terence Atmane,1,[2023]
+Hugo Grenier,2,"[2021, 2024]"
+Joao Fonseca,6,"[2023, 2024]"
+Hamad Medjedovic,4,"[2022, 2023, 2024]"
+Gregoire Barrere,18,"[2016, 2019, 2020, 2021, 2023, 2024]"
+Federico Agustin Gomez,1,[2024]
+Martin Landaluce,3,"[2022, 2024]"
+Alejandro Moro Canas,2,[2024]
+Daniel Evans,45,"[2015, 2016, 2017, 2019, 2020, 2021, 2022, 2023, 2024]"
+Stefano Napolitano,1,[2016]
+Zachary Svajda,1,[2022]
+Raphael Collignon,3,"[2023, 2024]"
+Titouan Droguet,2,[2023]
+Felipe Meligeni Alves,2,"[2020, 2024]"
+Maks Kasnikowski,1,[2024]
+Stan Wawrinka,156,"[2005, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Henrique Rocha,2,[2024]
+Gijs Brouwer,16,"[2019, 2021, 2022, 2023, 2024]"
+Patrick Kypson,3,"[2023, 2024]"
+Tomas Barrios Vera,5,"[2020, 2021, 2024]"
+Dmitry Popko,3,"[2017, 2022, 2024]"
+Tristan Schoolkate,2,"[2021, 2024]"
+Gustavo Heide,1,[2024]
+Sho Shimabukuro,1,[2023]
+Juan Pablo Ficovich,1,[2019]
+Alex Bolt,3,"[2014, 2019, 2021]"
+Constant Lestienne,5,"[2016, 2018, 2022, 2024]"
+Paul Jubb,4,"[2022, 2024]"
+Valentin Royer,1,[2024]
+Beibit Zhukayev,1,[2023]
+Jan Choinski,3,"[2023, 2024]"
+Matteo Martineau,2,"[2023, 2024]"
+Henri Squire,1,[2024]
+Murkel Alejandro Dellien Velasco,1,[2024]
+Li Tu,2,"[2021, 2024]"
+Stefano Travaglia,7,"[2017, 2019, 2020, 2021]"
+Vilius Gaubas,1,[2024]
+Aziz Dougaz,1,[2023]
+Omar Jasika,2,"[2017, 2024]"
+Timofey Skatov,3,"[2022, 2024]"
+Carlos Taberner,2,"[2018, 2021]"
+Nishesh Basavareddy,1,[2024]
+Brandon Holt,2,[2022]
+Facundo Mena,2,"[2019, 2021]"
+Alibek Kachmazov,1,[2024]
+Bernard Tomic,33,"[2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2024]"
+Marin Cilic,98,"[2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2024]"
+Jurij Rodionov,4,"[2019, 2020, 2022, 2023]"
+Pablo Carreno Busta,66,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2024]"
+Emilio Nava,5,"[2022, 2023, 2024]"
+Juan Pablo Varillas,10,"[2019, 2021, 2022, 2023, 2024]"
+Andrea Collarini,2,"[2015, 2019]"
+Oriol Roca Batalla,1,[2023]
+Enzo Couacaud,3,"[2019, 2021, 2023]"
+Adrian Andreev,3,"[2022, 2024]"
+Nick Hardt,4,"[2022, 2024]"
+Javier Barranco Cosano,1,[2021]
+Ugo Blanchet,1,[2022]
+Nicolas Mejia,3,"[2021, 2023, 2024]"
+Ethan Quinn,1,[2024]
+Denis Yevseyev,1,[2023]
+Santiago Fa Rodriguez Taverna,1,[2022]
+Michael Mmoh,6,"[2016, 2017, 2022, 2023]"
+Antoine Escoffier,2,"[2020, 2022]"
+Ignacio Buse,1,[2024]
+Denis Kudla,18,"[2014, 2015, 2016, 2018, 2019, 2021]"
+Calvin Hemery,1,[2015]
+Mark Lajal,3,"[2023, 2024]"
+Tung Lin Wu,2,[2022]
+Gianluca Mager,6,"[2019, 2020]"
+Maxime Cressy,37,"[2019, 2020, 2021, 2022, 2023, 2024]"
+Giulio Zeppieri,4,"[2020, 2022, 2024]"
+Abedallah Shelbayh,3,[2023]
+J J Wolf,13,"[2019, 2020, 2022, 2023, 2024]"
+Marc Polmans,5,"[2017, 2019, 2020]"
+Liam Draxl,1,[2024]
+Milos Raonic,98,"[2009, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2023, 2024]"
+Yu Hsiou Hsu,3,[2023]
+Rudolf Molleker,3,"[2018, 2019]"
+Alexander Blockx,1,[2023]
+Alexis Galarneau,2,[2022]
+Zsombor Piros,3,"[2018, 2021, 2024]"
+Andrea Vavassori,7,"[2021, 2022, 2023, 2024]"
+Shintaro Mochizuki,2,"[2023, 2024]"
+Benjamin Hassan,2,"[2023, 2024]"
+Yuta Shimizu,1,[2023]
+Geoffrey Blancaneaux,1,[2022]
+Jay Clarke,2,"[2018, 2019]"
+James Trotter,1,[2024]
+Dalibor Svrcina,2,[2021]
+Maxime Janvier,1,[2017]
+Charles Broom,1,[2024]
+Lukas Neumayer,1,[2023]
+Dominic Stricker,7,"[2020, 2021, 2022, 2023, 2024]"
+Andrea Pellegrino,2,"[2020, 2021]"
+Filip Misolic,4,"[2022, 2023]"
+Manuel Guinard,1,[2022]
+Karue Sell,6,[2024]
+James Mccabe,1,[2024]
+Alvaro Guillen Meza,1,[2024]
+Rio Noguchi,2,[2022]
+Daniel Rincon,2,"[2021, 2024]"
+Yan Bai,1,[2015]
+Matej Dodig,1,[2024]
+Ramkumar Ramanathan,4,"[2016, 2018, 2022]"
+Guy Den Ouden,1,[2024]
+Yosuke Watanuki,3,"[2018, 2023]"
+Daniel Masur,2,"[2017, 2021]"
+Lorenzo Giustino,4,"[2016, 2019, 2020]"
+Goncalo Oliveira,2,[2019]
+Kyrian Jacquet,2,"[2023, 2024]"
+Juan Carlos Prado Angelo,3,"[2023, 2024]"
+Benoit Paire,48,"[2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]"
+Gauthier Onclin,1,[2023]
+Bernabe Zapata Miralles,14,"[2019, 2020, 2021, 2022, 2023, 2024]"
+Max Houkes,1,[2022]
+Martin Damm,1,[2023]
+Pablo Llamas Ruiz,2,"[2023, 2024]"
+Pedro Cachin,10,"[2015, 2016, 2019, 2022, 2023, 2024]"
+Mateus Alves,2,"[2023, 2024]"
+Jelle Sels,7,"[2018, 2019, 2021, 2022, 2024]"
+Hady Habib,1,[2024]
+Mili Poljicak,2,[2022]
+Reilly Opelka,58,"[2016, 2017, 2019, 2020, 2021, 2022, 2024]"
+Pol Martin Tiffon,1,[2024]
+Elias Ymer,7,"[2014, 2015, 2016, 2017, 2021, 2024]"
+Francesco Maestrelli,1,[2022]
+Corentin Denolly,1,[2019]
+Ivan Gakhov,1,[2019]
+Martin Klizan,23,"[2014, 2015, 2016, 2017, 2018, 2019]"
+Oliver Crawford,1,[2023]
+Nikoloz Basilashvili,47,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]"
+Aslan Karatsev,40,"[2015, 2020, 2021, 2022, 2023]"
+Dominic Thiem,226,"[2011, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Max Hans Rehberg,2,[2022]
+Clement Tabur,1,[2023]
+Alexey Vatutin,1,[2016]
+Ricardas Berankis,14,"[2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2022]"
+Matheus Pucinelli De Almeida,1,[2022]
+Gastao Elias,5,"[2014, 2015, 2016, 2017]"
+Michael Geerts,1,[2022]
+Aidan Mayo,1,[2023]
+Renzo Olivo,5,"[2014, 2016, 2020, 2021]"
+Joris De Loore,2,"[2016, 2023]"
+Dane Sweeny,1,[2023]
+Oleksandr Ovcharenko,1,[2022]
+Kyle Edmund,31,"[2015, 2016, 2017, 2018, 2019, 2020, 2023]"
+Egor Gerasimov,11,"[2015, 2016, 2019, 2020, 2021, 2022]"
+Jiri Vesely,18,"[2014, 2015, 2016, 2018, 2019, 2020, 2022, 2023]"
+Daniel Dutra Da Silva,2,"[2022, 2024]"
+Soon Woo Kwon,11,"[2017, 2018, 2019, 2021, 2022, 2023]"
+Philip Sekulic,1,[2023]
+Nicola Kuhn,3,"[2018, 2020, 2022]"
+Joel Schwaerzler,1,[2024]
+Genaro Alberto Olivieri,2,"[2023, 2024]"
+Stefan Kozlov,4,"[2014, 2017, 2021, 2022]"
+Nerman Fatic,1,[2022]
+Antoine Bellier,2,"[2022, 2023]"
+Thai Son Kwiatkowski,1,[2018]
+Sebastian Fanselow,1,[2015]
+Diego Schwartzman,115,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]"
+Daniel Michalski,2,"[2022, 2024]"
+Marco Cecchinato,28,"[2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022]"
+Hiroki Moriya,1,[2014]
+Dennis Novak,6,"[2015, 2016, 2019, 2020, 2021, 2023]"
+Dino Prizmic,4,"[2023, 2024]"
+Dimitar Kuzmanov,3,"[2020, 2022, 2023]"
+Nicolas Alvarez Varona,1,[2021]
+Nicholas David Ionel,1,[2023]
+Kaichi Uchida,1,[2022]
+Luka Mikrut,1,[2024]
+Arthur Fery,1,[2023]
+Yibing Wu,7,"[2022, 2023]"
+Alex Molcan,15,"[2021, 2022, 2023, 2024]"
+Vitaliy Sachko,1,[2023]
+Masamichi Imamura,1,[2024]
+Zdenek Kolar,3,"[2016, 2022]"
+Mathias Bourgue,3,"[2014, 2019, 2021]"
+Raul Brancaccio,2,"[2022, 2023]"
+Evgeny Karlovskiy,1,[2018]
+Borna Gojo,3,"[2019, 2023]"
+Tennys Sandgren,20,"[2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]"
+Roberto Cid,1,[2019]
+Franco Agamenone,2,"[2021, 2022]"
+Norbert Gombos,4,"[2014, 2019, 2020]"
+Laurent Lokoli,2,"[2022, 2023]"
+Bruno Kuzuhara,1,[2022]
+Viktor Durasovic,3,"[2019, 2021, 2022]"
+Kiranpal Pannu,1,[2024]
+Tristan Lamasine,1,[2015]
+Orlando Luz,2,[2015]
+Frederico Ferreira Silva,2,"[2017, 2020]"
+Hernan Casanova,1,[2022]
+Moez Echargui,1,[2024]
+Nino Serdarusic,2,"[2018, 2021]"
+Evgeny Donskoy,9,"[2013, 2014, 2015, 2016, 2017, 2018, 2019, 2023]"
+Ernesto Escobedo,3,"[2015, 2016, 2019]"
+Sascha Gueymard Wayenburg,1,[2022]
+Cem Ilkel,4,"[2019, 2022, 2023]"
+Illya Marchenko,7,"[2014, 2016, 2021]"
+Blake Mott,1,[2017]
+Riccardo Bonadio,3,"[2019, 2020]"
+Dan Added,1,[2023]
+Peter Bertran,1,[2022]
+Mohamed Safwat,9,"[2014, 2018, 2019, 2020]"
+Liam Broady,4,"[2014, 2022, 2023]"
+Alastair Gray,1,[2022]
+Mate Valkusz,1,[2023]
+Edoardo Lavagno,1,[2023]
+Guido Andreozzi,5,"[2015, 2018, 2019]"
+Yusuke Takahashi,1,[2016]
+Joao Sousa,30,"[2013, 2014, 2015, 2016, 2017, 2018, 2019, 2022, 2024]"
+Luke Saville,2,"[2015, 2016]"
+Sergey Fomin,2,"[2019, 2022]"
+Federico Gaio,4,"[2015, 2016, 2018, 2020]"
+Oleksii Krutykh,2,"[2022, 2023]"
+Carlos Gimeno Valero,1,[2022]
+Joao Domingues,1,[2017]
+Jose Pereira,1,[2015]
+Andrej Martin,4,"[2014, 2016, 2020, 2022]"
+Altug Celikbilek,1,[2017]
+Alessandro Giannessi,5,"[2016, 2017, 2018, 2019, 2024]"
+Maximilian Neuchrist,1,[2022]
+Ryan Peniston,1,[2021]
+Louis Wessels,1,[2023]
+Ji Sung Nam,1,[2020]
+Filip Peliwo,1,[2013]
+Mirza Basic,6,"[2015, 2017, 2018, 2019]"
+Steven Diez,4,"[2014, 2016, 2022]"
+Leo Borg,3,"[2020, 2021, 2024]"
+Makoto Ochi,1,[2015]
+Antoine Hoang,3,"[2018, 2019]"
+Filip Krajinovic,35,"[2014, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]"
+Oscar Otte,9,"[2017, 2021, 2022, 2023]"
+Gerald Melzer,5,"[2015, 2016, 2017]"
+Elliot Benchetrit,3,"[2019, 2020]"
+Jason Jung,4,"[2015, 2018, 2019, 2020]"
+Aristotelis Thanos,1,[2022]
+Nicolai Budkov Kjaer,1,[2024]
+Salvatore Caruso,5,"[2016, 2017, 2019, 2021]"
+Johan Nikles,1,[2022]
+Marius Copil,11,"[2015, 2016, 2018, 2019]"
+Gian Marco Moroni,1,[2018]
+Karlis Ozolins,1,[2024]
+Ulises Blanch,1,[2018]
+Kenny De Schepper,2,"[2014, 2017]"
+Gabriel Decamps,1,[2022]
+Vasek Pospisil,24,"[2013, 2014, 2015, 2017, 2018, 2019, 2020, 2021, 2022, 2023]"
+Duck Hee Lee,3,"[2016, 2017, 2018]"
+Kimmer Coppejans,4,"[2014, 2015, 2021]"
+Michael Zheng,2,"[2022, 2023]"
+Miljan Zekic,2,"[2016, 2022]"
+Evan Furness,1,[2022]
+Rei Sakamoto,1,[2024]
+Patrick Brady,1,[2024]
+Gilles Arnaud Bailly,2,[2022]
+Kaylan Bigun,1,[2024]
+Jason Kubler,9,"[2014, 2018, 2019, 2022, 2023, 2024]"
+Blaz Rola,4,"[2014, 2015, 2018, 2019]"
+Juan Ignacio Londero,14,"[2018, 2019, 2020, 2021, 2022]"
+Nicolas Kicker,2,"[2015, 2017]"
+Mees Rottgering,1,[2024]
+Conner Huertas Del Pino,1,[2022]
+David Perez Sanz,1,[2015]
+Karim Mohamed Maamoun,46,"[2017, 2018, 2019, 2020]"
+Jose Rubin Statham,1,[2014]
+Daniel Cox,1,[2014]
+Kacper Zuk,1,[2021]
+Tomasz Berkieta,1,[2024]
+Arklon Huertas Del Pino,1,[2022]
+Steve Johnson,32,"[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]"
+Noah Rubin,4,"[2015, 2016, 2019]"
+Alexander Cozbinov,1,[2020]
+Fitriadi M Rifqi,1,[2023]
+Aldin Setkic,1,[2016]
+Henri Laaksonen,4,"[2015, 2018, 2019, 2022]"
+Nikola Milojevic,4,"[2016, 2017, 2019]"
+Emilio Gomez,3,"[2016, 2020, 2022]"
+Younes Lalami Laaroussi,1,[2023]
+Lucas Miedler,1,[2018]
+Daniil Ostapenkov,1,[2021]
+Tatsuma Ito,1,[2014]
+Patrick Kaukovalta,1,[2023]
+John Millman,28,"[2014, 2015, 2016, 2018, 2019, 2020, 2021, 2022, 2023, 2024]"
+Akira Santillan,3,"[2017, 2018]"
+Teymuraz Gabashvili,12,"[2013, 2014, 2015, 2016, 2017]"
+Aleksandre Metreveli,1,[2022]
+Robin Haase,56,"[2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2024]"
+Fernando Romboli,2,"[2015, 2016]"
+Jonathan Eysseric,1,[2017]
+Lucas Catarina,2,"[2021, 2024]"
+Zhe Li,2,"[2017, 2019]"
+Gleb Sakharov,2,"[2017, 2018]"
+Darian King,1,[2015]
+Mats Moraing,1,[2018]
+Christian Harrison,2,[2021]
+Thiemo De Bakker,5,"[2013, 2014, 2016, 2019]"
+Johan Sebastien Tatlot,2,"[2018, 2019]"
+Hyeon Chung,21,"[2015, 2016, 2017, 2018, 2019]"
+Joao Menezes,2,"[2019, 2021]"
+Alvaro Lopez San Martin,1,[2023]
+Sho Katayama,1,[2015]
+Hunter Reese,1,[2015]
+Kevin King,10,"[2017, 2019]"
+Francisco Llanes,1,[2021]
+Inigo Cervantes Huegun,10,"[2015, 2016]"
+Gonzalo Lama,1,[2014]
+Marsel Ilhan,2,"[2014, 2015]"
+Albano Olivetti,1,[2016]
+Lukas Rosol,16,"[2012, 2013, 2014, 2015, 2016, 2018, 2019]"
+Jan Kumstat,1,[2024]

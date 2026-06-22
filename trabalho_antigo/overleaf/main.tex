@@ -1,0 +1,102 @@
+\documentclass[10pt,a4paper]{article}
+
+% Codificacao e fontes vetoriais (sem serrilhado)
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% Layout da pagina
+\usepackage[margin=1.8cm,top=1.4cm,bottom=1.4cm]{geometry}
+\usepackage{setspace}
+\setstretch{1.0}
+\setlength{\parindent}{1cm}
+\setlength{\parskip}{0pt}
+
+% Hiperlinks
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,filecolor=black,urlcolor=blue,citecolor=black}
+\usepackage{url}
+
+% Cabecalho e rodape
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\footnotesize Universidade Federal de Sao Carlos -- Departamento de Estatistica -- Mineracao de Dados}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\thispagestyle{fancy}
+
+\begin{center}
+{\Large \textbf{Universidade Federal de Sao Carlos (UFSCar)}}\\[0.1cm]
+{\large \textbf{Departamento de Estatistica}}\\[0.15cm]
+{\large \textsc{Mineracao de Dados}}\\[0.3cm]
+\rule{\textwidth}{0.8pt}\\[0.15cm]
+{\LARGE \textbf{Projeto de Interpretabilidade de Modelos}}\\[0.1cm]
+{\large \textbf{Projeto Mineracao -- Grupo 5}}\\[0.2cm]
+\rule{\textwidth}{0.8pt}
+\end{center}
+
+\vspace{0.1cm}
+
+\noindent\textbf{Integrantes:}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Nome} & \textbf{RA} \\
+\hline
+Arthur Pereira Gon & 811464 \\
+Giovanni Roberti & 811676 \\
+Igor Figueiredo & 791420 \\
+Lucas Yukio & 813650 \\
+Murilo Cassiavilani & 812067 \\
+\hline
+\end{tabular}
+\end{center}
+
+\section*{Tema e Modalidade}
+
+\textbf{Tema sorteado:} 5 -- Interpretabilidade de Modelos. \textbf{Modalidade:} A -- Projeto aplicado de mineracao de dados.
+
+\section*{Resumo}
+
+Este projeto investiga a interpretabilidade de modelos preditivos aplicada aos cinco paradigmas de modelagem da disciplina. Para cada paradigma, foram selecionados datasets reais, ajustados modelos representativos e aplicadas tecnicas especificas de interpretacao para responder: por que o modelo prediz o que prediz?
+
+\section*{Metodologia}
+
+O desenvolvimento foi realizado em Python com scikit-learn para modelagem, utilizando validacao cruzada e divisoes temporais quando apropriado. As tecnicas de interpretabilidade empregadas incluem: coeficientes regularizados (Lasso), importancia por permutacao, Partial Dependence Plots (PDP) e SHAP (SHapley Additive exPlanations).
+
+\section*{Paradigmas Implementados}
+
+\textbf{1. Regressao -- Predicao de Salarios NBA.} Dataset: NBA Player Salaries 2022-23 (467 jogadores). Modelos: OLS, Ridge, Lasso, Random Forest. Variavel resposta: salario anual (log-transformado). Melhor resultado: Random Forest (R2 = 0.71). Interpretabilidade: coeficientes padronizados revelaram que minutos jogados e Box Plus/Minus sao os preditores mais importantes. Fonte: \url{https://www.kaggle.com/datasets/jamiewelsh2/nba-player-salaries-2022-23-season}.
+
+\textbf{2. Classificacao -- Vitoria do Mandante na Premier League.} Dataset: Premier League Stats 2006-2018 (4.560 partidas). Modelos: Regressao Logistica com Lasso, Random Forest. Variavel resposta: vitoria do mandante (binaria). Divisao temporal: treino 2006-2015, teste 2016-2018. Melhor resultado: Logistica Lasso (AUC-ROC = 0.77). Interpretabilidade: o Lasso selecionou apenas 3 variaveis (diff\_wins, diff\_losses, diff\_att\_ibox\_goal), revelando que a forma do time e o unico preditor realmente importante. Fonte: \url{https://www.kaggle.com/datasets/zaeemnalla/premier-league}.
+
+\textbf{3. Agrupamento -- Perfis de Jogadores de Tenis.} Dataset: Tennis Player Data (462 jogadores ATP). Algoritmos: K-Means (K = 2, escolhido via Silhouette = 0.24) e Agrupamento Hierarquico (Ward). Features: 12 metricas de saque e devolucao. Clusters identificados: (0) Saqueadores/Agressivos (42 jogadores, ex: Dimitrov, Hurkacz) e (1) Devolvedores/Baseline (56 jogadores, ex: Carreno Busta, De Minaur). Interpretabilidade: analise dos centroides, graficos radar e jogadores representativos validam a dicotomia classica do tenis. Fonte: \url{https://www.kaggle.com/datasets/mohammadkumail110/tennis-player-data-serve-return-and-raw}.
+
+\section*{Paradigmas Pendentes}
+
+\textbf{4. Mineracao de Textos:} Modelagem de topicos (LDA) e classificacao de documentos, com interpretacao por inspecao de palavras relevantes.
+
+\textbf{5. Deteccao de Anomalias:} Isolation Forest e LOF, com interpretacao das variaveis que mais se desviam do perfil medio.
+
+\section*{Implementacao}
+
+Desenvolvimento em Python com scikit-learn, pandas, matplotlib e seaborn. Todo o codigo esta organizado em pipelines reprodutiveis, documentando desde a importacao dos dados brutos ate a geracao das figuras e tabelas finais. Repositorio: \url{https://github.com/ArthurGoon/Projeto-Mineracao-de-Dados}.
+
+\section*{Referencias}
+
+\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parsep}{0pt}
+    \item Welsh, J. NBA Player Salaries (2022-23 Season). Kaggle, 2023.
+    \item Kumail, M. Tennis Player Data (Serve, Return and Raw). Kaggle, 2024.
+    \item Zaeem, N. Premier League Stats. Kaggle, 2019.
+    \item Tibshirani, R. Regression Shrinkage and Selection via the Lasso. JRSS, 1996.
+    \item Breiman, L. Random Forests. Machine Learning, 2001.
+    \item Lundberg, S. M.; Lee, S. I. A Unified Approach to Interpreting Model Predictions. NeurIPS, 2017.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,45 @@
+/home/arthur/.local/lib/python3.12/site-packages/matplotlib/projections/__init__.py:63: UserWarning: Unable to import Axes3D. This may be due to multiple versions of Matplotlib being installed (e.g. as a system package and as a pip package). As a result, the 3D projection is not available.
+  warnings.warn("Unable to import Axes3D. This may be due to multiple versions of "
+=== 1. LEITURA E LIMPEZA MELHORADA ===
+Results: (4560, 6)
+Stats: (240, 42)
+
+[A] MISSING VALUES em stats:
+   big_chance_missed: 80/240 (33.3%)
+   backward_pass: 80/240 (33.3%)
+   head_clearance: 20/240 (8.3%)
+   saves: 20/240 (8.3%)
+   total_through_ball: 20/240 (8.3%)
+   dispossessed: 20/240 (8.3%)
+
+   Features REMOVIDAS (>30% missing): ['big_chance_missed', 'backward_pass']
+   saves: 20 -> 0 (imputado por temporada)
+   head_clearance: 20 -> 0 (imputado por temporada)
+   total_through_ball: 20 -> 0 (imputado por temporada)
+   dispossessed: 20 -> 0 (imputado por temporada)
+
+=== 2. FEATURE ENGINEERING AVANCADO ===
+
+[B] STATS DA TEMPORADA ANTERIOR (mitiga leakage temporal):
+Traceback (most recent call last):
+  File "/home/arthur/.local/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 3812, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7096, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'home_prev_season_start'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/arthur/Projeto Mineração de dados /classificação/pipeline_classificacao_melhorado.py", line 139, in <module>
+    results_m[f'home_{col}'] = results_m[hp].fillna(results_m[hc])
+                               ~~~~~~~~~^^^^
+  File "/home/arthur/.local/lib/python3.12/site-packages/pandas/core/frame.py", line 4113, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/arthur/.local/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 3819, in get_loc
+    raise KeyError(key) from err
+KeyError: 'home_prev_season_start'

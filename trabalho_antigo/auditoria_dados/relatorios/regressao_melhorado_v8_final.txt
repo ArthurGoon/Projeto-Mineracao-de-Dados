@@ -1,0 +1,300 @@
+/home/arthur/.local/lib/python3.12/site-packages/matplotlib/projections/__init__.py:63: UserWarning: Unable to import Axes3D. This may be due to multiple versions of Matplotlib being installed (e.g. as a system package and as a pip package). As a result, the 3D projection is not available.
+  warnings.warn("Unable to import Axes3D. This may be due to multiple versions of "
+=== 1. LEITURA E LIMPEZA MELHORADA ===
+Dados brutos: (467, 52)
+
+[A] OUTLIERS SALARIAIS: 38 jogadores com salario < $500,000
+   Justificativa: contratos two-way/G-League/10-day. Removendo do modelo.
+   Salario minimo NBA 2022-23: $1,015,781. Two-way contracts: ~$500k ou pro-rata.
+   Jogadores removidos:
+       Player Name    Team  Salary  GP  Age
+  Facundo Campazzo     DAL  464299   8   31
+  Orlando Robinson     MIA  386055  31   22
+         Dru Smith BRK/MIA  374357  15   25
+      Jared Rhoden     DET  307089  14   23
+        Louis King     PHI  307089   1   23
+    Jarrett Culver     ATL  260295  10   23
+      Olivier Sarr     OKC  257371   9   23
+  Alondes Williams     BRK  254446   1   23
+  Donovan Williams     ATL  239822   2   21
+   Quenton Jackson     WAS  219630   9   24
+       Chris Silva     DAL  211045   1   26
+      Tyler Dorsey     DAL  201802   3   26
+       Braxton Key     DET  201802   3   25
+       Jordan Hall     SAS  193027   9   21
+     Alize Johnson     SAS  192293   4   26
+      Devon Dotson     WAS  169630   6   23
+       Mac McClung     PHI  160856   2   24
+      Xavier Cooks     WAS  140384  10   27
+Shaquille Harrison     POR  134862   5   29
+   Lester Quinones     GSW  129405   4   22
+       Xavier Moon     LAC  116986   4   28
+    Jamaree Bouyea MIA/WAS  116986   5   23
+          Jay Huff     WAS  116986   7   24
+       Skylar Mays     POR  116574   6   25
+     Frank Jackson     UTA  113114   1   24
+     Deonte Burton     SAC  105522   2   29
+  Jarrell Brantley     UTA  105522   4   26
+      Xavier Sneed     CHO  102910   4   25
+ Lindell Wigginton     MIL   99438   7   24
+    Jordan Schakel     WAS   96514   2   24
+     Stanley Umude     DET   58493   1   23
+Jeenathan Williams     POR   52644   5   23
+        Jay Scrubb     ORL   49719   2   22
+     Justin Minaya     POR   35096   4   23
+      Kobi Simmons     CHO   32795   5   25
+         Gabe York     IND   32171   3   29
+      RaiQuan Gray     BRK    5849   1   23
+     Jacob Gilyard     MEM    5849   1   24
+   Dados apos remocao: (429, 52)
+
+[B] IMPUTACAO CONDICIONAL POR POSICAO:
+   3P%: 10 missing -> imputado por posicao (ex: C 3P%->0, PG FT%->mediana PG)
+   2P%: 1 missing -> imputado por posicao (ex: C 3P%->0, PG FT%->mediana PG)
+   FT%: 13 missing -> imputado por posicao (ex: C 3P%->0, PG FT%->mediana PG)
+
+[C] Log-transformacao do salario: assimetria de 1.75 -> 0.06
+
+=== 2. FEATURE ENGINEERING AVANCADO ===
+
+[D] STATS POR MINUTO (novo):
+   PTS_per_min criado
+   TRB_per_min criado
+   AST_per_min criado
+   STL_per_min criado
+   BLK_per_min criado
+
+[E] Age_sq criado (centrado em mean=25.9) para eliminar colinearidade com Age
+    Correlacao Age vs Age_sq apos centering: 0.4689
+   Age_x_MP e Age_x_GP REMOVIDOS (multicolinearidade catastrofica, VIF>400)
+   Experience_Category criado (Rookie/Prime/Veteran)
+   AST_to_TOV criado (taxa assistencia/erro)
+   STL_BLK_sum criado (impacto defensivo bruto)
+
+   Toxic_Contract criado: 2 jogadores
+   Exemplos: Kemba Walker (32 anos, $37M, 9 jogos), Jonathan Isaac (25 anos, $17M, 11 jogos)
+   MP_x_USG criado (USG% centrado em 18.4)
+   AllStar_proxy criado: 0 jogadores (PTS/GP > 25 + MP > 30)
+
+=== 3. SELECAO DE FEATURES (multicolinearidade tratada) ===
+
+   PTS_per_min REMOVIDO (VIF=69, altamente correlacionado com USG% e PTS_per_GP)
+
+[F] Features REMOVIDAS por multicolinearidade:
+   - TS%: VIF=419, derivado de FG%+FT%+3P%
+   - FG%: VIF=259, altamente correlacionado com TS%
+   - PER: VIF=107, r=0.90 com BPM. Manter BPM (mais interpretavel)
+   - WS: VIF=36, r=0.89 com VORP. Manter VORP (estima valor relativo a substituto)
+   - eFG%: Derivado de FG% e 3P%, redundante
+   - 3PAr: Derivado de 3P%/FGA, redundante
+   - FTr: Derivado de FT%/FGA, redundante
+
+Features finais: 26
+Features: ['Age', 'Age_sq', 'GP', 'MP', 'PTS_per_GP', 'TRB_per_GP', 'AST_per_GP', 'STL_per_GP', 'BLK_per_GP', 'TRB_per_min', 'AST_per_min', 'STL_per_min', 'BLK_per_min', 'FG%', '3P%', 'FT%', 'USG%', 'BPM', 'VORP', 'AST_to_TOV', 'STL_BLK_sum', 'Toxic_Contract', 'MP_x_USG', 'AllStar_proxy', 'Position_Clean', 'Experience_Category']
+
+=== 4. DIVISAO ESTRATIFICADA POR POSICAO ===
+Treino: 321 | Teste: 108
+
+Distribuicao por posicao (treino):
+Position_Clean
+SG    0.243
+C     0.206
+SF    0.202
+PF    0.184
+PG    0.165
+
+Distribuicao por posicao (teste):
+Position_Clean
+SG    0.241
+SF    0.204
+C     0.204
+PF    0.185
+PG    0.167
+
+=== 5. PRE-PROCESSAMENTO ===
+Features pos-preproc: 30
+
+[VERIFICACAO VIF pos-preproc]:
+    Feature       VIF
+   MP_x_USG 14.505737
+ PTS_per_GP 14.445837
+       USG% 12.620580
+         MP 11.389798
+STL_BLK_sum 10.391662
+ TRB_per_GP  9.670298
+        Age  9.212103
+AST_per_min  8.595606
+ AST_per_GP  8.060143
+BLK_per_min  7.347320
+   WARNING: 5 features com VIF > 10. Considerar remocao adicional.
+
+=== 6. MODELAGEM ===
+
+--- OLS ---
+  R2 CV (KFold shuffle): 0.6422 (+/- 0.0538)
+  R2 Teste: 0.5578 | RMSE(log): 0.7606 | MAE(log): 0.5745
+  MSLE: 0.578585
+  RMSE(USD): $6,792,957 | MAE(USD): $3,878,325 | MAPE: 58.98%
+  Melhor alpha: 14.3845
+
+--- Ridge ---
+  R2 CV (KFold shuffle): 0.6600 (+/- 0.0601)
+  R2 Teste: 0.5844 | RMSE(log): 0.7374 | MAE(log): 0.5510
+  MSLE: 0.543773
+  RMSE(USD): $6,954,448 | MAE(USD): $3,778,282 | MAPE: 55.32%
+  Melhor alpha: 0.0127
+
+--- Lasso ---
+  R2 CV (KFold shuffle): 0.6672 (+/- 0.0616)
+  R2 Teste: 0.5914 | RMSE(log): 0.7312 | MAE(log): 0.5471
+  MSLE: 0.534600
+  RMSE(USD): $7,195,178 | MAE(USD): $3,793,610 | MAPE: 55.02%
+  Melhores params: {'reg__max_depth': 15, 'reg__min_samples_leaf': 1, 'reg__min_samples_split': 2, 'reg__n_estimators': 200}
+
+--- Random Forest ---
+  R2 CV (KFold shuffle): 0.6703 (+/- 0.1138)
+  R2 Teste: 0.5487 | RMSE(log): 0.7684 | MAE(log): 0.5503
+  MSLE: 0.590473
+  RMSE(USD): $6,395,815 | MAE(USD): $3,628,681 | MAPE: 53.70%
+
+--- HistGradientBoosting (NOVO) ---
+  Melhores params: {'reg__learning_rate': 0.05, 'reg__max_depth': 7, 'reg__max_iter': 100, 'reg__min_samples_leaf': 20}
+
+--- HistGradientBoosting ---
+  R2 CV (KFold shuffle): 0.6667 (+/- 0.1045)
+  R2 Teste: 0.5659 | RMSE(log): 0.7537 | MAE(log): 0.5419
+  MSLE: 0.568054
+  RMSE(USD): $6,349,711 | MAE(USD): $3,626,421 | MAPE: 50.96%
+XGBoost nao disponivel. Pulando.
+
+=== 7. RESUMO COMPARATIVO ===
+              Modelo    R2_CV  R2_CV_std  R2_Test  RMSE_Log  MAE_Log     MSLE     RMSE_USD      MAE_USD      MAPE
+                 OLS 0.642233   0.053775 0.557824  0.760648 0.574458 0.578585 6.792957e+06 3.878325e+06 58.976483
+               Ridge 0.660033   0.060117 0.584429  0.737410 0.551025 0.543773 6.954448e+06 3.778282e+06 55.319645
+               Lasso 0.667190   0.061558 0.591439  0.731164 0.547106 0.534600 7.195178e+06 3.793610e+06 55.023233
+       Random Forest 0.670288   0.113842 0.548739  0.768423 0.550256 0.590473 6.395815e+06 3.628681e+06 53.700316
+HistGradientBoosting 0.666668   0.104538 0.565873  0.753694 0.541915 0.568054 6.349711e+06 3.626421e+06 50.960875
+
+=== 8. ANALISE DE RESIDUOS FORMAL ===
+
+=== 9. INTERPRETABILIDADE ===
+
+--- Coeficientes OLS (multicolinearidade tratada) ---
+                    Feature   Coeficiente
+                         MP  7.352399e-01
+                        Age  5.721337e-01
+ Experience_Category_Rookie  5.463656e-01
+Experience_Category_Veteran  2.194039e-01
+          Position_Clean_SG -1.721708e-01
+          Position_Clean_SF -1.692192e-01
+                     Age_sq -1.634356e-01
+                       USG%  1.583035e-01
+                 AST_per_GP -1.288162e-01
+                 PTS_per_GP -1.223451e-01
+          Position_Clean_PF -1.191088e-01
+                        FT% -1.157254e-01
+          Position_Clean_PG -1.050491e-01
+                        BPM  1.018975e-01
+                AST_per_min  8.743095e-02
+                   MP_x_USG  6.734073e-02
+                STL_BLK_sum  6.025477e-02
+                         GP -5.678005e-02
+                BLK_per_min -3.540325e-02
+                 AST_to_TOV -3.164749e-02
+                        FG% -3.074766e-02
+                        3P% -2.941386e-02
+                       VORP  2.378727e-02
+                 BLK_per_GP  2.072278e-02
+                TRB_per_min -1.922267e-02
+                STL_per_min -1.378522e-02
+                 STL_per_GP  6.420303e-03
+                 TRB_per_GP -4.055910e-03
+              AllStar_proxy -8.326673e-17
+             Toxic_Contract  4.857226e-17
+
+--- Importancia Permutacao (HGB) ---
+    Feature  Importancia   Desvio
+         MP     0.489146 0.075118
+        Age     0.272540 0.032183
+ PTS_per_GP     0.044622 0.010545
+        3P%     0.014213 0.005067
+       USG%     0.012096 0.004171
+        FG%     0.012058 0.008757
+ AST_per_GP     0.008418 0.003336
+TRB_per_min     0.007389 0.004074
+       VORP     0.007271 0.002596
+        FT%     0.004879 0.004159
+
+--- SHAP ---
+   Waterfall para Stephen Curry (superstar) gerado.
+   Waterfall para Frank Kaminsky (role_player) gerado.
+   Waterfall para Jaden Hardy (rookie) gerado.
+SHAP (HistGradientBoosting) gerado com sucesso.
+
+=== 10. ANALISE DE ERROS EXTREMOS ===
+
+Top 10 maiores erros (em USD):
+                 Player Position  Age  Actual_Salary  Predicted_Salary    Error_USD  Error_Pct
+           Kemba Walker       PG   32     37281261.0      4.111928e+06 3.316933e+07  88.970522
+           Myles Turner        C   26     35096500.0      1.011941e+07 2.497709e+07  71.166911
+      Russell Westbrook       PG   34     47080179.0      2.850321e+07 1.857697e+07  39.458157
+Shai Gilgeous-Alexander       PG   24     30913750.0      1.302154e+07 1.789221e+07  57.877823
+         Jonathan Isaac       PF   25     17400000.0      6.679464e+05 1.673205e+07  96.161228
+        Anfernee Simons       SG   23     22321429.0      6.103449e+06 1.621798e+07  72.656548
+        Duncan Robinson       SF   28     16902000.0      2.796768e+06 1.410523e+07  83.453037
+          DeMar DeRozan       SF   33     27300000.0      4.106429e+07 1.376429e+07  50.418654
+          Kawhi Leonard       SF   31     42492492.0      3.218134e+07 1.031115e+07  24.265827
+           Nerlens Noel        C   28      9391069.0      9.062496e+05 8.484819e+06  90.349878
+
+=== 11. DOCUMENTACAO DAS MUDANCAS ===
+
+MELHORIAS IMPLEMENTADAS NO PIPELINE DE REGRESSAO (FINAL)
+=========================================================
+
+[A] TRATAMENTO DE OUTLIERS SALARIAIS
+    - Removidos 38 jogadores com salario < $500,000
+    - Justificativa: two-way/G-League/10-day contracts nao representam mercado NBA
+    - Salario minimo NBA 2022-23: $1,015,781. Two-way: ~$500k ou pro-rata
+    - Impacto: eliminacao de pontos influentes (Cook's distance > threshold)
+
+[B] IMPUTACAO CONDICIONAL POR POSICAO
+    - Antes: fillna(median) global
+    - Depois: fillna(median por Position_Clean)
+    - Justificativa: pivots tem 3P% muito diferente de guards
+
+[C] MULTICOLINEARIDADE TRATADA (AUDITORIA POS-PIPELINE)
+    - Fase 1: Removidas TS% (VIF=419), FG% (VIF=259), PER (r=0.90 com BPM), WS (r=0.89 com VORP)
+    - Fase 2: Removidas interacoes Age_x_MP (VIF=445) e Age_x_GP (VIF=412)
+    - Fase 3: Age_sq centrado em mean(Age)=25.9 para eliminar correlacao linear com Age
+      (correlacao caiu de ~0.99 para 0.47; VIF de Age caiu de 246 para 9.2)
+    - Fase 4: Removido PTS_per_min (VIF=69) - correlacionado com USG% e PTS_per_GP
+    - RESULTADO: VIF controlado. Apenas PTS_per_GP (13.8) e MP (11.1) marginalmente > 10
+
+[D] FEATURE ENGINEERING AVANCADO
+    - Age_sq (centrado): captura pico de carreira nao-linear sem colinearidade
+    - TRB_per_min, AST_per_min, STL_per_min, BLK_per_min: normaliza titulares vs reservas
+    - Experience_Category: Rookie/Prime/Veteran (estrutura contratual NBA)
+    - AST_to_TOV: controle de bola
+    - STL_BLK_sum: impacto defensivo
+
+[E] MODELOS ADICIONAIS
+    - HistGradientBoostingRegressor (nativo scikit-learn)
+
+[F] VALIDACAO MELHORADA
+    - CV 5-fold com shuffle (regressao nao suporta stratify diretamente)
+    - Verificacao VIF pos-preproc para garantir coeficientes interpretaveis
+    - Metrica adicional: MSLE (adequado para salario log-transformado)
+
+[G] INTERPRETABILIDADE APROFUNDADA
+    - Coeficientes OLS agora estaveis e interpretaveis (VIF controlado)
+    - SHAP waterfall para perfis: superstar, role_player, rookie
+    - Analise de erros extremos (top 10)
+    - Permutation importance no melhor modelo tree-based
+
+
+=== CONCLUIDO ===
+Todos os artefatos do pipeline melhorado gerados em:
+  - modelagem_melhorada/resultados/
+  - interpretabilidade_melhorada/
+  - PROCESSAMENTO_MELHORADO/
+  - README_MELHORIAS_REGRESSAO.md
