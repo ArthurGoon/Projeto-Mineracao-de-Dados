@@ -3,8 +3,8 @@
 **Disciplina:** Mineração de Dados  
 **Dataset:** NBA Player Stats & Salaries 2022-23 Season  
 **Objetivo:** Prever o salário anual de jogadores NBA com base em estatísticas de jogo, características demográficas e features de mercado  
-**Pipeline Final:** `pipeline_regressao_melhorado.py`  
-**Status:** Fechado — auditoria pós-pipeline concluída, VIF controlado, interpretabilidade gerada
+**Pipeline Final:** `run_regressao_nba_completo.py`  
+**Status:** Fechado — VIF controlado, interpretabilidade gerada
 
 ---
 
@@ -30,7 +30,8 @@ Este relatório documenta o pipeline completo de regressão para predição de s
 
 - **Dataset final:** 429 jogadores (de 467 originais)
 - **Features finais:** 23 (de 52 originais, após remoção de multicolinearidade)
-- **Melhor modelo:** HistGradientBoosting (MAPE = **52.18%**, R² = 0.559)
+- **Modelo de referência (predição):** Ridge com maior R² no teste (**0.588**); HGB com menor MAPE (**52.18%**, R² = **0.559**)
+- **Modelo para interpretabilidade não linear:** HistGradientBoosting (permutation importance + SHAP)
 - **Coeficientes OLS:** Estáveis e interpretáveis (VIF controlado, máx = 13.8)
 - **Interpretabilidade:** SHAP (summary + 3 waterfalls), permutation importance, PDP, coeficientes OLS/Ridge/Lasso
 
@@ -174,7 +175,7 @@ Cada feature foi criada com justificativa de domínio e testada estatisticamente
 - O efeito da idade no salário não é linear. Jogadores têm **pico de carreira** entre 27-30 anos, com salários crescentes até lá e decrescentes depois
 - A forma parabólica `Age + Age_sq` captura esse pico (coeficiente positivo para Age, negativo para Age_sq)
 - **Centering é obrigatório para polinômios** (Kutner et al., 2004): sem centering, Age e Age_sq têm correlação ≈ 0.99, gerando VIF catastrófico
-- Após centering: correlação Age vs Age_sq = **0.47** (aceitável); VIF de Age caiu de **246 → 9.2**
+- Após centering: correlação Age vs Age_sq = **0.47** (aceitável); VIF de Age caiu de **512 → 9.2** (ver `vif_antes_narrativo.csv` / `vif_pos_preprocessamento.csv`)
 
 ### 4.4 Experience Category
 
@@ -229,15 +230,29 @@ A multicolinearidade ocorre quando features são altamente correlacionadas, infl
 - **VIF > 10:** Problema grave
 - **VIF > 100:** Catastrófico
 
-### 5.2 Fases de Tratamento
+**Fonte reprodutível:** os VIF citados nesta seção vêm de `2_PREPROCESSAMENTO/vif_antes_narrativo.csv` e `vif_pos_preprocessamento.csv`, gerados automaticamente por `run_regressao_nba_completo.py` (mesmos valores dos gráficos da apresentação).
+
+### 5.2 VIF Antes da Limpeza (modelo com features problemáticas)
+
+| Feature | VIF | Status |
+|---|---|---|
+| Age | 512.0 | Catastrófico |
+| TS% | 254.7 | Catastrófico |
+| Age² (sem centering) | 155.9 | Catastrófico |
+| FG% | 134.8 | Catastrófico |
+| PER | 48.6 | Alta colinearidade |
+| MP | 9.3 | Moderado |
+| BPM | 6.1 | Aceitável |
+
+### 5.3 Fases de Tratamento
 
 #### Fase 1: Remoção de Features Derivadas/Redundantes
 
-| Feature Removida | VIF Original | Justificativa |
+| Feature Removida | VIF (modelo acima) | Justificativa |
 |---|---|---|
-| `TS%` | 419 | Derivado de FG% + FT% + 3P%. Redundante. |
-| `FG%` | 259 | Altamente correlacionado com TS% (r > 0.9) |
-| `PER` | 107 | r = 0.90 com BPM. Manter BPM (mais interpretável) |
+| `TS%` | 254.7 | Derivado de FG% + FT% + 3P%. Redundante. |
+| `FG%` | 134.8 | Altamente correlacionado com TS% (r > 0.9) |
+| `PER` | 48.6 | r = 0.90 com BPM. Manter BPM (mais interpretável) |
 | `WS` | 36 | r = 0.89 com VORP. Manter VORP (mais interpretável) |
 | `eFG%` | — | Derivado de FG% e 3P% |
 | `3PAr`, `FTr` | — | Derivados de taxas de arremesso |
@@ -250,14 +265,14 @@ A multicolinearidade ocorre quando features são altamente correlacionadas, infl
 
 #### Fase 3: Centering de Age_sq
 
-Sem centering: VIF(Age) = 246, VIF(Age_sq) = 212  
-Com centering em mean(Age) = 25.9: VIF(Age) = **9.2**, VIF(Age_sq) = **6.1**
+Sem centering: VIF(Age) = 512, VIF(Age²) = 156  
+Com centering em mean(Age) = 25.9: VIF(Age) = **9.2**, VIF(Age_sq) = **2.6**
 
 #### Fase 4: Remoção de PTS_per_min
 
 VIF = 69. Altamente correlacionado com `USG%` (uso de posses) e `PTS_per_GP`.
 
-### 5.3 VIF Pós-Preprocessamento (Dataset Final)
+### 5.4 VIF Pós-Preprocessamento (Dataset Final)
 
 | Feature | VIF | Status |
 |---|---|---|
@@ -274,7 +289,7 @@ VIF = 69. Altamente correlacionado com `USG%` (uso de posses) e `PTS_per_GP`.
 
 **Resultado:** Todas as features com VIF < 14. Coeficientes OLS agora **estáveis e interpretáveis**.
 
-### 5.4 Features Finais (23 features)
+### 5.5 Features Finais (23 features)
 
 **Numéricas (18):** Age, Age_sq, GP, MP, PTS_per_GP, TRB_per_GP, AST_per_GP, STL_per_GP, BLK_per_GP, TRB_per_min, AST_per_min, STL_per_min, BLK_per_min, FG%, 3P%, FT%, USG%, BPM, VORP, AST_to_TOV, STL_BLK_sum, Toxic_Contract  
 **Categóricas (2):** Position_Clean (5 categorias), Experience_Category (3 categorias)  
@@ -354,8 +369,8 @@ Combinou Ridge + Random Forest + HGB com meta-learner Ridge. Não melhorou signi
 ### 6.4 Validação Cruzada
 
 - **K-Fold:** 5 folds com shuffle (regressão não suporta stratify)
-- **Métrica principal:** R² (coeficiente de determinação)
-- **Métricas adicionais:** RMSE, MAE, MSLE, MAPE
+- **Métricas de desempenho:** R², RMSE, MAE, MSLE e MAPE (comparação entre algoritmos no conjunto de teste)
+- **Critério de seleção para interpretabilidade:** HistGradientBoosting — menor MAPE entre os modelos não lineares testados e compatível com SHAP/permutation importance em árvore (tema do seminário). Ridge permanece como referência linear com melhor R² no holdout (0.588)
 - **MSLE** foi incluído porque é adequado para alvos log-transformados (penaliza mais erros em valores pequenos)
 
 ---
@@ -374,16 +389,24 @@ Combinou Ridge + Random Forest + HGB com meta-learner Ridge. Não melhorou signi
 
 ### 7.2 Análise dos Resultados
 
-**Melhor modelo:** HistGradientBoosting com **MAPE = 52.18%**.
+**Comparação no teste (holdout, n = 108):**
 
-**Por que HGB venceu?**
-- Captura relações não-lineares (pico de carreira em Age, plateau em MP)
-- Lida bem com a cauda pesada do salário
-- Regularização via `min_samples_leaf=20` evita overfitting
+| Critério | Melhor modelo | Valor |
+|---|---|---|
+| R² teste | **Ridge** | 0.5878 |
+| MAPE | **HistGradientBoosting** | 52.18% |
+| MAE (USD) | Random Forest | $3,580,678 |
 
-**Por que OLS não venceu?**
-- Embora os coeficientes estejam estáis (VIF controlado), OLS assume linearidade
-- O efeito da idade é parabólico, MP tem plateau — relações não-lineares que HGB captura melhor
+**Modelo escolhido para interpretabilidade avançada:** HistGradientBoosting (HGB).
+
+**Por que HGB para SHAP e permutation importance?**
+- Menor **MAPE** no teste (52.18%), com R² competitivo (0.559)
+- Captura relações não-lineares (pico de carreira em Age, plateau em MP) — alinhado ao tema de interpretabilidade em modelos de caixa-preta
+- Ridge vence em R² linear (0.588), mas não oferece SHAP tree-based nem decomposição local comparável; usamos Ridge/OLS/Lasso para **coeficientes marginais**
+
+**Por que OLS não lidera em nenhuma métrica?**
+- Embora os coeficientes estejam estáveis (VIF controlado), OLS assume linearidade
+- O efeito da idade é parabólico, MP tem plateau — relações que HGB captura melhor
 
 **Por que MAPE ~52% não é ruim:**
 - Na literatura de economia do esporte, modelos com apenas box-score stats têm MAPE = 50-70% (Berri & Schmidt, 2006)
@@ -400,7 +423,7 @@ Combinou Ridge + Random Forest + HGB com meta-learner Ridge. Não melhorou signi
 | RF | 0.113 | Alta variância (árvores sensíveis a amostragem) |
 | HGB | 0.097 | Variância moderada |
 
-**Conclusão:** Modelos lineares (OLS/Ridge) são mais estáveis, mas tree-based (HGB) têm melhor viés-variância tradeoff para este dataset.
+**Conclusão:** Modelos lineares (OLS/Ridge) são mais estáveis no CV; HGB equilibra viés-variância para relações não lineares e serve como base das análises SHAP/permutation deste relatório.
 
 ---
 
@@ -412,7 +435,7 @@ Combinou Ridge + Random Forest + HGB com meta-learner Ridge. Não melhorou signi
 
 | Feature | Coeficiente | Interpretação | Caveat |
 |---|---|---|---|
-| **MP** | **+0.74** | Maior preditor. Mais minutos = salário maior | ✅ Faz sentido. Confirmaado por dados brutos (r=+0.74 com log-salário) |
+| **MP** | **+0.74** | Maior preditor. Mais minutos = salário maior | ✅ Faz sentido. Confirmado por dados brutos (r=+0.74 com log-salário) |
 | **Age** | **+0.57** | Idade aumenta salário até o pico | ✅ Faz sentido. Pico de carreira ~28-30 anos |
 | **Experience_Category_Rookie** | **+0.55** | Efeito positivo forte | ⚠️ Provavelmente captura idade jovem + estrutura contratual CBA, não "valor de mercado" de rookies |
 | **Experience_Category_Veteran** | **+0.22** | Experiência é valorizada | ✅ Faz sentido |
@@ -485,6 +508,8 @@ Técnica agnóstica ao modelo: mede a queda no R² ao embaralhar cada feature.
 | 10 | VORP | 0.006 | 0.003 | Valor sobre reposição |
 
 **Conclusão:** A permutation importance confirma que **MP e Age dominam** a predição. Stats de eficiência (USG%, 3P%) têm importância secundária. Posições e categorias de experiência têm importância muito baixa no modelo tree-based (são categóricas com pouca variância).
+
+> **Nota metodológica:** os valores 0,452 (MP) e 0,262 (Age) somam ~0,71 — isso representa a **queda acumulada no R² ao embaralhar cada feature**, não “71% da variância explicada”. A interpretação correta é: embaralhar MP ou Age reduz fortemente a capacidade preditiva do HGB.
 
 ### 8.4 SHAP (SHapley Additive exPlanations)
 
@@ -627,7 +652,7 @@ A variável `Toxic_Contract` foi criada para capturar esse padrão, mas com apen
 
 1. **Preparação de dados 100% maximizada:** VIF controlado, outliers tratados com justificativa teórica, imputação condicional, transformação adequada
 2. **Feature engineering completo:** Age² centrado, stats por minuto, categorias de experiência, contratos tóxicos
-3. **Modelagem robusta:** 5 modelos testados, HGB venceu por melhor viés-variância
+3. **Modelagem robusta:** 5 modelos testados; Ridge lidera em R² no teste; HGB escolhido para interpretabilidade (MAPE + SHAP)
 4. **Interpretabilidade rica:** SHAP (3 perfis), coeficientes OLS, permutation importance, PDP
 5. **Performance realista:** R² = 0.56, MAPE = 52% — **alinhado com a literatura** para modelos com apenas stats de jogo
 
@@ -641,7 +666,7 @@ Este é um **caso EXCELENTE para apresentação** porque:
 - Identifica **limitações como aprendizado** (contratos tóxicos explicam por que o modelo erra)
 
 **Mensagem central para a apresentação:**
-> *"Nosso modelo atingiu R²=0.56 e MAPE=52%. Na literatura de economia do esporte, modelos com apenas estatísticas de jogo têm exatamente esse teto preditivo. Demonstramos o processo rigoroso: identificamos multicolinearidade catastrófica (VIF=419), corrigimos com centering de polinômios, e geramos interpretabilidade com SHAP. Algo importante: nem todo coeficiente OLS faz sentido econômico — GP e PTS_per_GP aparecem negativos devido à multicolinearidade residual com MP e USG%. Isso nos ensina que **coeficientes marginais não são verdades causais**; para interpretação confiável, preferimos SHAP e permutation importance, que são agnósticos a colinearidade. Os maiores erros não são falhas do modelo — são contratos tóxicos que nenhuma estatística de jogo pode prever."*
+> *"Nosso modelo atingiu R²=0.56 e MAPE=52% no HistGradientBoosting — escolhido para SHAP e permutation importance. Ridge teve o maior R² no teste (0.59), confirmando que modelos lineares regulados também são competitivos. Na literatura de economia do esporte, modelos com apenas estatísticas de jogo têm exatamente esse teto preditivo. Demonstramos o processo rigoroso: identificamos multicolinearidade catastrófica (VIF de Age = 512 e TS% = 255), corrigimos com centering de polinômios e remoção de redundâncias (VIF máximo final = 13.8), e geramos interpretabilidade com SHAP. Algo importante: nem todo coeficiente OLS faz sentido econômico — GP e PTS_per_GP aparecem negativos devido à multicolinearidade residual com MP e USG%. Isso nos ensina que **coeficientes marginais não são verdades causais**; para interpretação confiável, preferimos SHAP e permutation importance, que são agnósticos a colinearidade. Os maiores erros não são falhas do modelo — são contratos tóxicos que nenhuma estatística de jogo pode prever."*
 
 ---
 
@@ -679,10 +704,13 @@ Regressão/
 │   ├── 05_salario_vs_stats.png
 │   ├── 06_salario_vs_idade.png
 │   └── estatisticas_descritivas.csv
+│   └── salary_histogram.json
 │
 ├── 2_PREPROCESSAMENTO/
 │   ├── X_train.csv, X_test.csv
 │   ├── y_train.csv, y_test.csv
+│   ├── vif_antes_narrativo.csv
+│   ├── vif_pos_preprocessamento.csv
 │   └── receitas/
 │       ├── preprocessador.pkl
 │       └── feature_names.pkl
@@ -692,6 +720,7 @@ Regressão/
 │   └── resultados/
 │       ├── metricas_comparacao.csv
 │       ├── erros_extremos.csv
+│       ├── mae_por_perfil.csv
 │       ├── comparacao_modelos.png
 │       └── residuos_modelos.png
 │
@@ -701,6 +730,7 @@ Regressão/
     ├── importancia_permutacao/
     ├── graficos_pdp/
     └── shap_values/
+        └── shap_profiles.json
 ```
 
 ## Reprodutibilidade
@@ -709,12 +739,15 @@ Para regenerar todos os artefatos a partir do dataset bruto:
 
 ```bash
 cd Regressão
+pip install -r requirements.txt
 python3 run_regressao_nba_completo.py
+python3 sync_apresentacao_data.py   # atualiza apresentacao/js/data.js
+python3 ../apresentacao/build_standalone.py
 ```
 
-**Dependências:** `pandas`, `numpy`, `scikit-learn`, `matplotlib`, `seaborn`, `statsmodels`, `shap`, `joblib`, `scipy`
+**Dependências:** ver `requirements.txt`
 
-O script imprime métricas no terminal e salva figuras, CSVs e modelos nas subpastas acima. Compare os resultados com as tabelas deste documento.
+O script imprime métricas no terminal e salva figuras, CSVs e modelos nas subpastas acima.
 
 ---
 

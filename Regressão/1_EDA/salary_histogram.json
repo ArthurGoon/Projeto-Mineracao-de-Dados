@@ -1,0 +1,57 @@
+{
+  "total": 467,
+  "removedOutliers": 38,
+  "cleanTotal": 429,
+  "bins": [
+    {
+      "label": "<1M",
+      "count": 75,
+      "outliers": 38
+    },
+    {
+      "label": "1-2M",
+      "count": 73,
+      "outliers": 0
+    },
+    {
+      "label": "2-3M",
+      "count": 67,
+      "outliers": 0
+    },
+    {
+      "label": "3-5M",
+      "count": 53,
+      "outliers": 0
+    },
+    {
+      "label": "5-8M",
+      "count": 47,
+      "outliers": 0
+    },
+    {
+      "label": "8-12M",
+      "count": 47,
+      "outliers": 0
+    },
+    {
+      "label": "12-18M",
+      "count": 36,
+      "outliers": 0
+    },
+    {
+      "label": "18-25M",
+      "count": 21,
+      "outliers": 0
+    },
+    {
+      "label": "25-35M",
+      "count": 25,
+      "outliers": 0
+    },
+    {
+      "label": "35-50M",
+      "count": 23,
+      "outliers": 0
+    }
+  ]
+}

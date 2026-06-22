@@ -127,8 +127,8 @@
                 </p>
                 <ul class="step-list">
                     <li>Centralizamos a Idade ao quadrado subtraindo a média da idade (25.9 anos).</li>
-                    <li>O VIF da idade desabou de <strong>246,0 para 9,2</strong>.</li>
-                    <li>O VIF máximo do dataset caiu de <strong>419,0 para 13,8</strong>.</li>
+                    <li>O VIF da idade desabou de <strong>512,0 para 9,2</strong>.</li>
+                    <li>O VIF máximo do dataset caiu de <strong>512,0 para 13,8</strong>.</li>
                 </ul>
             </section>
 
@@ -137,10 +137,10 @@
                 <div class="step-label">Modelagem & Performance</div>
                 <h2 class="step-title">Métricas e o <span>Teto Preditivo</span></h2>
                 <p class="step-desc">
-                    Avaliamos cinco algoritmos de regressão. O modelo <strong>HistGradientBoosting (HGB)</strong> obteve o melhor equilíbrio de teste:
+                    Avaliamos cinco algoritmos de regressão. No teste, <strong>Ridge</strong> teve o maior R² (0,588); o <strong>HistGradientBoosting (HGB)</strong> teve o menor MAPE (52,18%). Escolhemos o HGB para permutation importance e SHAP — foco do seminário em interpretabilidade.
                 </p>
                 <ul class="step-list">
-                    <li>R² de teste estabilizado em <strong>0,559</strong> e MAPE de <strong>52,18%</strong>.</li>
+                    <li>HGB: R² de teste <strong>0,559</strong> e MAPE <strong>52,18%</strong>.</li>
                     <li>Modelos puramente de box-score encontram aí seu limite prático.</li>
                     <li>Fatores de mercado, tamanho do mercado da cidade e histórico de lesões explicam os 48% restantes da variância.</li>
                 </ul>
@@ -166,12 +166,12 @@
                 <div class="step-label">Interpretabilidade Não-Paramétrica</div>
                 <h2 class="step-title">Do Linear ao <span>Gradient Boosting</span></h2>
                 <p class="step-desc">
-                    Testamos cinco modelos — cada um com sua ferramenta de interpretação. Nos lineares: coeficientes. No <strong>HistGradientBoosting</strong> (melhor performance): permutation importance e SHAP.
+                    Testamos cinco modelos — cada um com sua ferramenta de interpretação. Nos lineares: coeficientes. No <strong>HistGradientBoosting</strong> (modelo base para SHAP): permutation importance e valores SHAP.
                 </p>
                 <ul class="step-list">
                     <li><strong>Random Forest:</strong> importância por impureza de nó (menos confiável que permutation).</li>
                     <li><strong>HGB — Permutation:</strong> MP responde por 45,2% da importância; Age por 26,2%.</li>
-                    <li>MP + Age explicam <strong>~71%</strong> da variabilidade salarial no melhor modelo.</li>
+                    <li>MP + Age concentram <strong>~71%</strong> da importância por permutação (queda relativa no R² ao embaralhar).</li>
                     <li>O painel à direita resume qual método usamos em cada algoritmo.</li>
                 </ul>
             </section>
@@ -212,10 +212,10 @@
                     Em vez de porcentagens abstratas, medimos o <strong>desvio absoluto médio em dólares</strong> (MAE) por perfil de jogador no conjunto de teste do HistGradientBoosting.
                 </p>
                 <ul class="step-list">
-                    <li><strong>Role players:</strong> desvio médio de ~US$ 1,2M — salário alinhado à produção.</li>
-                    <li><strong>Rookies (CBA):</strong> ~US$ 1,4M — o modelo entende a escala, mas não o potencial futuro.</li>
-                    <li><strong>Superstars:</strong> ~US$ 5,8M — marca pessoal e legado fogem do box-score.</li>
-                    <li><strong>Lesionados / supermax:</strong> US$ 11–15M de desvio — contratos herdados do passado.</li>
+                    <li><strong>Role players:</strong> desvio médio de ~US$ 3,1M — salário alinhado à produção.</li>
+                    <li><strong>Rookies (CBA):</strong> ~US$ 2,0M — o modelo entende a escala, mas não o potencial futuro.</li>
+                    <li><strong>Superstars:</strong> ~US$ 11M — marca pessoal e legado fogem do box-score.</li>
+                    <li><strong>Lesionados / supermax:</strong> US$ 9–25M de desvio — contratos herdados do passado.</li>
                     <li>Linha tracejada = MAE global do modelo (US$ 3,68M).</li>
                 </ul>
             </section>
@@ -396,7 +396,7 @@
                 <div class="visual-panel" data-panel="8">
                     <div class="panel-title"><span>#</span> MAPA DE INTERPRETABILIDADE · PERMUTATION (HGB)</div>
                     <div class="interpret-strip" id="interpretStrip"></div>
-                    <div class="chart-note">Permutation importance no HistGradientBoosting (melhor modelo). Passe o mouse para ler a queda no R².</div>
+                    <div class="chart-note">Permutation importance no HistGradientBoosting (modelo usado para SHAP). Passe o mouse para ler a queda no R².</div>
                     <div style="flex: 1; position: relative;">
                         <svg class="svg-canvas" id="permutationSvg"></svg>
                     </div>
@@ -454,7 +454,7 @@
                     <div class="finale-grid">
                         <div class="finale-card">
                             <div class="finale-kicker">Rigor</div>
-                            <div class="finale-value">VIF 419 → 13,8</div>
+                            <div class="finale-value">VIF 512 → 13,8</div>
                             <p>Auditoria, remoção de redundâncias e centralização polinomial.</p>
                         </div>
                         <div class="finale-card">

@@ -1,0 +1,113 @@
+{
+  "curry": {
+    "baseVal": 4.58,
+    "predVal": 46.26,
+    "realVal": 48.07,
+    "forces": [
+      {
+        "name": "Minutos (MP)",
+        "val": 7.96,
+        "positive": true
+      },
+      {
+        "name": "Idade (Age)",
+        "val": 10.67,
+        "positive": true
+      },
+      {
+        "name": "Uso (USG%)",
+        "val": 2.74,
+        "positive": true
+      },
+      {
+        "name": "Pontos (PTS/GP)",
+        "val": 3.06,
+        "positive": true
+      },
+      {
+        "name": "Tocos/GP",
+        "val": 2.86,
+        "positive": true
+      },
+      {
+        "name": "Outros",
+        "val": 14.39,
+        "positive": true
+      }
+    ]
+  },
+  "kaminsky": {
+    "baseVal": 4.58,
+    "predVal": 1.86,
+    "realVal": 2.46,
+    "forces": [
+      {
+        "name": "Minutos (MP)",
+        "val": -2.37,
+        "positive": false
+      },
+      {
+        "name": "Idade (Age)",
+        "val": 0.54,
+        "positive": true
+      },
+      {
+        "name": "Pontos (PTS/GP)",
+        "val": -0.25,
+        "positive": false
+      },
+      {
+        "name": "Tocos/GP",
+        "val": -0.18,
+        "positive": false
+      },
+      {
+        "name": "AST/TOV",
+        "val": -0.16,
+        "positive": false
+      },
+      {
+        "name": "Outros",
+        "val": -0.3,
+        "positive": false
+      }
+    ]
+  },
+  "hardy": {
+    "baseVal": 4.58,
+    "predVal": 2.74,
+    "realVal": 1.02,
+    "forces": [
+      {
+        "name": "Minutos (MP)",
+        "val": -1.6,
+        "positive": false
+      },
+      {
+        "name": "Idade (Age)",
+        "val": -0.84,
+        "positive": false
+      },
+      {
+        "name": "Jogos (GP)",
+        "val": 0.39,
+        "positive": true
+      },
+      {
+        "name": "Uso (USG%)",
+        "val": 0.29,
+        "positive": true
+      },
+      {
+        "name": "Age²",
+        "val": 0.16,
+        "positive": true
+      },
+      {
+        "name": "Outros",
+        "val": -0.25,
+        "positive": false
+      }
+    ]
+  }
+}

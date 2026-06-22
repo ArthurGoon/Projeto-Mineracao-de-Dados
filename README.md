@@ -34,7 +34,15 @@ Predição de salários da NBA (temporada 2022-23) com foco em **auditoria metod
 
 ```bash
 cd Regressão
+pip install -r requirements.txt
 python3 run_regressao_nba_completo.py
+```
+
+Para atualizar a apresentação após rodar o pipeline:
+
+```bash
+python3 sync_apresentacao_data.py
+python3 ../apresentacao/build_standalone.py
 ```
 
 **Entrada:** `dataset/nba_2022-23_all_stats_with_salary.csv` (467 jogadores)
@@ -50,7 +58,7 @@ python3 run_regressao_nba_completo.py
 
 **Documentação completa:** [`Regressão/REGRESSAO_NBA.md`](Regressão/REGRESSAO_NBA.md)
 
-**Dependências Python:** `pandas`, `numpy`, `scikit-learn`, `matplotlib`, `seaborn`, `statsmodels`, `shap`, `joblib`, `scipy`
+**Dependências:** `Regressão/requirements.txt`
 
 ---
 
@@ -65,6 +73,8 @@ apresentacao/index.html
 Para editar e regenerar o HTML autocontido:
 
 ```bash
-# Edite source.html, css/ e js/
-python3 apresentacao/build_standalone.py
+cd Regressão
+python3 run_regressao_nba_completo.py
+python3 sync_apresentacao_data.py
+python3 ../apresentacao/build_standalone.py
 ```

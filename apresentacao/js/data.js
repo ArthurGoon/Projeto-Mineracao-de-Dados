@@ -74,28 +74,29 @@ window.NBA_DATA = [
 
 // Auxiliar visual datasets
 window.vifBeforeData = [
-    { name: "TS%", val: 419.0, status: "Colineariedade Crítica" },
-    { name: "FG%", val: 259.0, status: "Colineariedade Crítica" },
-    { name: "Idade", val: 246.0, status: "Colineariedade Crítica" },
-    { name: "PER", val: 84.0, status: "Alta Colineariedade" },
-    { name: "BPM", val: 56.0, status: "Alta Colineariedade" },
-    { name: "MP", val: 28.0, status: "Alta Colineariedade" }
+    { name: "Idade", val: 512.0, status: "Colineariedade Crítica" },
+    { name: "TS%", val: 254.7, status: "Colineariedade Crítica" },
+    { name: "Idade² (sem centering)", val: 155.9, status: "Colineariedade Crítica" },
+    { name: "FG%", val: 134.8, status: "Colineariedade Crítica" },
+    { name: "PER", val: 48.6, status: "Alta Colineariedade" },
+    { name: "MP", val: 9.3, status: "Moderado" }
 ];
 
 window.vifAfterData = [
-    { name: "Idade Centrada", val: 9.2, status: "Aceitável" },
-    { name: "MP (Minutos)", val: 6.8, status: "Aceitável" },
-    { name: "PTS (Pontos)", val: 5.4, status: "Aceitável" },
-    { name: "USG% (Uso)", val: 4.1, status: "Aceitável" },
-    { name: "BPM (Eficiência)", val: 3.8, status: "Aceitável" }
+    { name: "PTS (Pontos)", val: 13.8, status: "Alta Colineariedade" },
+    { name: "MP (Minutos)", val: 11.1, status: "Alta Colineariedade" },
+    { name: "STL_BLK_sum", val: 9.8, status: "Moderado" },
+    { name: "Rebotes/GP", val: 9.2, status: "Moderado" },
+    { name: "Idade Centrada", val: 9.2, status: "Moderado" },
+    { name: "AST_per_min", val: 8.3, status: "Moderado" }
 ];
 
 window.modelMetrics = [
     { name: "HistGradientBoosting (HGB)", mape: 52.18, r2: 0.559, maeUsd: 3678298, color: "var(--accent-teal)", interpret: "Permutation + SHAP" },
-    { name: "Random Forest", mape: 53.45, r2: 0.541, maeUsd: 3580678, color: "var(--accent-purple)", interpret: "Importância por impureza" },
-    { name: "Ridge Regression", mape: 56.20, r2: 0.518, maeUsd: 3721480, color: "var(--accent-blue)", interpret: "Coeficientes L2" },
-    { name: "Lasso Regression", mape: 57.10, r2: 0.505, maeUsd: 3778538, color: "var(--accent-orange)", interpret: "Coeficientes L1" },
-    { name: "OLS Baseline", mape: 58.91, r2: 0.490, maeUsd: 3850058, color: "var(--accent-pink)", interpret: "Coeficientes OLS" }
+    { name: "Random Forest", mape: 52.85, r2: 0.550, maeUsd: 3580678, color: "var(--accent-purple)", interpret: "Importância por impureza" },
+    { name: "Ridge Regression", mape: 55.34, r2: 0.588, maeUsd: 3721480, color: "var(--accent-blue)", interpret: "Coeficientes L2" },
+    { name: "Lasso Regression", mape: 56.49, r2: 0.581, maeUsd: 3778538, color: "var(--accent-orange)", interpret: "Coeficientes L1" },
+    { name: "OLS Baseline", mape: 58.91, r2: 0.562, maeUsd: 3850058, color: "var(--accent-pink)", interpret: "Coeficientes OLS" }
 ];
 
 window.coefCompareData = [
@@ -126,54 +127,75 @@ window.lassoCoefs = [
 ];
 
 window.olsCoefs = [
-    { name: "Minutos (MP)", val: 0.78, warning: false },
-    { name: "Uso (USG%)", val: 0.42, warning: false },
-    { name: "Eficiência (BPM)", val: 0.25, warning: false },
-    { name: "Idade Centrada", val: 0.08, warning: false },
-    { name: "Jogos (GP)", val: -0.06, warning: true },
+    { name: "Minutos (MP)", val: 0.74, warning: false },
+    { name: "Idade (Age)", val: 0.57, warning: false },
+    { name: "Rookie (CBA)", val: 0.55, warning: false },
+    { name: "Uso (USG%)", val: 0.21, warning: false },
+    { name: "Age²", val: -0.16, warning: false },
     { name: "Pontos (PTS/GP)", val: -0.11, warning: true }
 ];
 
 window.permutationData = [
     { name: "Minutos Jogados (MP)", val: 0.452 },
     { name: "Idade (Age)", val: 0.262 },
-    { name: "Uso (USG%)", val: 0.124 },
-    { name: "Eficiência (BPM)", val: 0.091 },
-    { name: "Pontos (PTS/GP)", val: 0.071 }
+    { name: "Pontos (PTS/GP)", val: 0.041 },
+    { name: "Uso (USG%)", val: 0.023 },
+    { name: "3P%", val: 0.013 }
 ];
+
+window.shapPlayerStats = {
+    curry: [
+        { lbl: "Perfil", val: "Superstar" },
+        { lbl: "Salário real", val: "US$ 48,1M" },
+        { lbl: "Previsto HGB", val: "US$ 46,3M" }
+    ],
+    kaminsky: [
+        { lbl: "Perfil", val: "Role player" },
+        { lbl: "Salário real", val: "US$ 2,5M" },
+        { lbl: "Previsto HGB", val: "US$ 1,9M" }
+    ],
+    hardy: [
+        { lbl: "Perfil", val: "Rookie scale" },
+        { lbl: "Salário real", val: "US$ 1,0M" },
+        { lbl: "Previsto HGB", val: "US$ 2,7M" }
+    ]
+};
 
 window.shapProfiles = {
     curry: {
-        baseVal: 8.5,
-        predVal: 42.0,
+        baseVal: 4.58,
+        predVal: 46.26,
         forces: [
-            { name: "Minutos (MP)", val: 18.5, positive: true },
-            { name: "Uso (USG%)", val: 8.2, positive: true },
-            { name: "Eficiência (BPM)", val: 5.4, positive: true },
-            { name: "Idade (Age)", val: 2.1, positive: true },
-            { name: "Outros", val: -0.7, positive: false }
+            { name: "Minutos (MP)", val: 7.96, positive: true },
+            { name: "Idade (Age)", val: 10.67, positive: true },
+            { name: "Uso (USG%)", val: 2.74, positive: true },
+            { name: "Pontos (PTS/GP)", val: 3.06, positive: true },
+            { name: "Tocos/GP", val: 2.86, positive: true },
+            { name: "Outros", val: 14.39, positive: true }
         ]
     },
     kaminsky: {
-        baseVal: 8.5,
-        predVal: 2.0,
+        baseVal: 4.58,
+        predVal: 1.86,
         forces: [
-            { name: "Minutos (MP)", val: -4.8, positive: false },
-            { name: "Uso (USG%)", val: -1.2, positive: false },
-            { name: "Pontos (PTS)", val: -0.8, positive: false },
-            { name: "Idade (Age)", val: 0.5, positive: true },
-            { name: "Outros", val: -0.2, positive: false }
+            { name: "Minutos (MP)", val: -2.37, positive: false },
+            { name: "Idade (Age)", val: 0.54, positive: true },
+            { name: "Pontos (PTS/GP)", val: -0.25, positive: false },
+            { name: "Tocos/GP", val: -0.18, positive: false },
+            { name: "AST/TOV", val: -0.16, positive: false },
+            { name: "Outros", val: -0.3, positive: false }
         ]
     },
     hardy: {
-        baseVal: 8.5,
-        predVal: 1.5,
+        baseVal: 4.58,
+        predVal: 2.74,
         forces: [
-            { name: "Idade (Age)", val: -6.2, positive: false },
-            { name: "Minutos (MP)", val: -1.8, positive: false },
-            { name: "Uso (USG%)", val: 1.2, positive: true },
-            { name: "Pontos (PTS)", val: 0.5, positive: true },
-            { name: "Outros", val: -0.7, positive: false }
+            { name: "Minutos (MP)", val: -1.6, positive: false },
+            { name: "Idade (Age)", val: -0.84, positive: false },
+            { name: "Jogos (GP)", val: 0.39, positive: true },
+            { name: "Uso (USG%)", val: 0.29, positive: true },
+            { name: "Age²", val: 0.16, positive: true },
+            { name: "Outros", val: -0.25, positive: false }
         ]
     }
 };
@@ -203,40 +225,40 @@ window.fitMapData = [
     {
         group: "Role players",
         desc: "Salário acompanha minutos e produção",
-        maeM: 1.15,
-        n: 248,
+        maeM: 3.13,
+        n: 71,
         color: "var(--accent-teal)",
-        example: "Frank Kaminsky: real US$ 2,5M vs previsto US$ 2,0M (desvio US$ 0,5M)"
+        example: "Frank Kaminsky: real US$ 2,5M vs previsto US$ 1,9M (desvio US$ 0,6M)"
     },
     {
         group: "Rookies (CBA)",
         desc: "Contrato limitado pela regra da liga",
-        maeM: 1.42,
-        n: 95,
+        maeM: 1.95,
+        n: 27,
         color: "var(--accent-blue)",
-        example: "Jaden Hardy: real US$ 1,0M vs previsto US$ 1,5M (desvio US$ 0,5M)"
+        example: "Jaden Hardy: real US$ 1,0M vs previsto US$ 2,7M (desvio US$ 1,7M)"
     },
     {
         group: "Superstars",
         desc: "Marca e legado elevam o contrato",
-        maeM: 5.80,
-        n: 42,
+        maeM: 10.99,
+        n: 2,
         color: "var(--accent-purple)",
-        example: "Stephen Curry: real US$ 48,0M vs previsto US$ 42,0M (desvio US$ 6,0M)"
+        example: "Stephen Curry: real US$ 48,1M vs previsto US$ 46,3M (desvio US$ 1,8M)"
     },
     {
         group: "Lesionados",
         desc: "Poucos jogos, contrato antigo alto",
-        maeM: 14.60,
-        n: 6,
+        maeM: 24.61,
+        n: 2,
         color: "var(--accent-rose)",
         example: "Jonathan Isaac: real US$ 17,4M vs previsto US$ 0,7M (desvio US$ 16,7M)"
     },
     {
         group: "Supermax antigos",
         desc: "Contrato herdado do auge da carreira",
-        maeM: 11.30,
-        n: 8,
+        maeM: 8.57,
+        n: 6,
         color: "var(--accent-orange)",
         example: "Kemba Walker: real US$ 37,3M vs previsto US$ 4,8M (desvio US$ 32,5M)"
     }
@@ -246,7 +268,7 @@ window.HGB_OVERALL_MAE_M = 3.68;
 
 window.extremeErrors = [
     { name: "Kemba Walker", real: 37.3, pred: 4.8, error: 32.5, age: 32, gp: 9, pos: "PG", cause: "Assinou contrato máximo anterior, mas jogou apenas 9 partidas devido a lesões crônicas no joelho." },
-    { name: "Jonathan Isaac", real: 17.4, pred: 0.7, error: 16.7, age: 25, gp: 11, pos: "PF", cause: "Lesão grave de LCA (ligamento cruzado anterior) limitou sua atuação a 11 partidas, reduzindo estatísticas de box-score para nível de banco." },
-    { name: "John Wall", real: 47.3, pred: 35.1, error: 12.2, age: 32, gp: 34, pos: "PG", cause: "Contrato Supermax garantido no auge físico. Desempenho caiu drasticamente pós-lesão do tendão de aquiles." },
-    { name: "Russell Westbrook", real: 47.1, pred: 38.0, error: 9.1, age: 34, gp: 73, pos: "PG", cause: "Veterano com salário supermax. Embora jogue minutos consistentes, a queda na eficiência produtiva não é recompensada pelo modelo." }
+    { name: "Myles Turner", real: 35.1, pred: 9.4, error: 25.7, age: 26, gp: 62, pos: "C", cause: "Contrato estendido acima do valor de mercado atual; o modelo prevê salário compatível com produção recente." },
+    { name: "Russell Westbrook", real: 47.1, pred: 28.9, error: 18.2, age: 34, gp: 73, pos: "PG", cause: "Supermax antigo: minutos consistentes, mas eficiência abaixo do que o contrato sugere." },
+    { name: "Shai Gilgeous-Alexander", real: 30.9, pred: 13.0, error: 17.9, age: 24, gp: 68, pos: "PG", cause: "Supermax recente antes do pico estatístico; modelo subestima contrato de franquia jovem." }
 ];

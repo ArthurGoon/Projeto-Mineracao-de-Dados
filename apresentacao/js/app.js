@@ -1407,23 +1407,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- PANEL 9: SHAP SHOWCASE & WATERFALLS ---
-    const playerStatsMap = {
-        curry: [
-            { lbl: "Perfil", val: "Superstar" },
-            { lbl: "Salário real", val: "$48.0M" },
-            { lbl: "Previsto HGB", val: "$42.0M" }
-        ],
-        kaminsky: [
-            { lbl: "Perfil", val: "Role player" },
-            { lbl: "Salário real", val: "$2.5M" },
-            { lbl: "Previsto HGB", val: "$2.0M" }
-        ],
-        hardy: [
-            { lbl: "Perfil", val: "Rookie scale" },
-            { lbl: "Salário real", val: "$1.0M" },
-            { lbl: "Previsto HGB", val: "$1.5M" }
-        ]
-    };
+    const playerStatsMap = window.shapPlayerStats;
 
     profileBtns.forEach(btn => {
         btn.addEventListener("click", () => {
