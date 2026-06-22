@@ -25,7 +25,6 @@ Predição de salários da NBA (temporada 2022-23) com foco em **auditoria metod
 ```
 ├── apresentacao/          # Deck scrollytelling (HTML final + fonte)
 ├── Regressão/             # Dataset, script único e resultados
-├── trabalho_antigo/       # Outros paradigmas e material arquivado
 └── README.md
 ```
 
@@ -69,9 +68,3 @@ Para editar e regenerar o HTML autocontido:
 # Edite source.html, css/ e js/
 python3 apresentacao/build_standalone.py
 ```
-
----
-
-## trabalho_antigo/
-
-Material de outros paradigmas da disciplina (classificação, agrupamento, overleaf, auditorias) — **fora do escopo desta entrega**.
