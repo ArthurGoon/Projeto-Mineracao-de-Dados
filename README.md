@@ -76,13 +76,6 @@ pdflatex main.tex
 
 As figuras em `relatorio/` são PDFs vetoriais gerados em `Regressão/4_INTERPRETABILIDADE/figuras_relatorio/` e copiadas para `relatorio/` ao rodar o pipeline.
 
-Para validar números e tabelas do relatório contra os artefatos do pipeline:
-
-```bash
-cd Regressão
-python3 auditoria_relatorio.py
-```
-
 ---
 
 ## Apresentação — como visualizar
