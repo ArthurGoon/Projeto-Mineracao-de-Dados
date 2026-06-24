@@ -23,6 +23,7 @@ Predição de salários da NBA (temporada 2022-23) com foco em **auditoria metod
 ### Estrutura do repositório
 
 ```
+├── relatorio/             # Relatório PDF de entrega (LaTeX + figuras)
 ├── apresentacao/          # Deck scrollytelling (HTML final + fonte)
 ├── Regressão/             # Dataset, script único e resultados
 └── README.md
@@ -59,6 +60,28 @@ python3 ../apresentacao/build_standalone.py
 **Documentação completa:** [`Regressão/REGRESSAO_NBA.md`](Regressão/REGRESSAO_NBA.md)
 
 **Dependências:** `Regressão/requirements.txt`
+
+---
+
+## Relatório — PDF de entrega
+
+Arquivo final: [`relatorio/main.pdf`](relatorio/main.pdf) (máx. 8 páginas).
+
+Para recompilar após editar o texto ou trocar figuras:
+
+```bash
+cd relatorio
+pdflatex main.tex
+```
+
+As figuras em `relatorio/` são PDFs vetoriais gerados em `Regressão/4_INTERPRETABILIDADE/figuras_relatorio/` e copiadas para `relatorio/` ao rodar o pipeline.
+
+Para validar números e tabelas do relatório contra os artefatos do pipeline:
+
+```bash
+cd Regressão
+python3 auditoria_relatorio.py
+```
 
 ---
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Pipeline de regressão NBA — dataset bruto até modelos e interpretabilidade. Ver REGRESSAO_NBA.md."""
 import json as _json
+import shutil
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -15,6 +16,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 ROOT = Path(__file__).resolve().parent
+REPO_ROOT = ROOT.parent
+REPORT_DIR = REPO_ROOT / 'relatorio'
 os.chdir(ROOT)
 
 DIR_EDA = ROOT / '1_EDA'
@@ -32,6 +35,7 @@ for d in [
     DIR_INTERP / 'importancia_permutacao',
     DIR_INTERP / 'graficos_pdp',
     DIR_INTERP / 'shap_values',
+    DIR_INTERP / 'figuras_relatorio',
 ]:
     d.mkdir(parents=True, exist_ok=True)
 
@@ -62,6 +66,34 @@ eda_stats.to_csv(DIR_EDA / 'estatisticas_descritivas.csv')
 print(f"Estatísticas descritivas salvas em {DIR_EDA / 'estatisticas_descritivas.csv'}")
 
 sns.set_theme(style='whitegrid', font_scale=0.9)
+
+REPORT_FIG_DIR = DIR_INTERP / 'figuras_relatorio'
+REPORT_LABELS = {
+    'MP': 'Minutos (MP)',
+    'Age': 'Idade',
+    'PTS_per_GP': 'Pontos por jogo',
+    'USG%': 'Uso ofensivo (USG%)',
+    '3P%': 'Aproveitamento 3P%',
+    'FG%': 'Aproveitamento FG%',
+    'AST_to_TOV': 'AST/TOV',
+    'BLK_per_min': 'Tocos por minuto',
+    'TRB_per_min': 'Rebotes por minuto',
+    'VORP': 'VORP',
+    'Age_sq': 'Idade²',
+    'AST_per_GP': 'Assistências por jogo',
+    'FT%': 'Lances livres (FT%)',
+    'STL_BLK_sum': 'Roubos + tocos',
+    'STL_per_GP': 'Roubos por jogo',
+    'GP': 'Jogos disputados',
+    'BPM': 'BPM',
+    'BLK_per_GP': 'Tocos por jogo',
+    'AST_per_min': 'Assistências/min',
+    'STL_per_min': 'Roubos/min',
+    'TRB_per_GP': 'Rebotes por jogo',
+}
+
+def _report_label(feature):
+    return REPORT_LABELS.get(feature, feature)
 
 fig, ax = plt.subplots(figsize=(8, 5))
 ax.hist(df_raw['Salary'] / 1e6, bins=40, color='#a78bfa', edgecolor='white')
@@ -100,6 +132,47 @@ for ax, col, color in zip(axes, ['MP', 'PTS', 'BPM'], ['#2dd4bf', '#fb923c', '#6
     ax.set_xlabel(col); ax.set_ylabel('Salário (US$ M)')
 fig.suptitle('Salário vs Estatísticas de Jogo', fontweight='bold')
 plt.tight_layout(); plt.savefig(DIR_EDA / '05_salario_vs_stats.png', dpi=200); plt.close()
+
+# Figura vetorial para o relatório: EDA com rótulos maiores e menos ruído visual.
+fig, axes = plt.subplots(2, 2, figsize=(11.5, 8.2))
+ax = axes[0, 0]
+ax.hist(df_raw['Salary'] / 1e6, bins=32, color='#8b5cf6', edgecolor='white')
+ax.set_title('Distribuição dos salários', fontsize=15, fontweight='bold')
+ax.set_xlabel('Salário (US$ milhões)', fontsize=12)
+ax.set_ylabel('Jogadores', fontsize=12)
+ax.tick_params(axis='both', labelsize=11)
+ax.grid(axis='y', alpha=0.25)
+
+ax = axes[0, 1]
+salary_corr = df_raw[['Salary', 'PTS', 'VORP', 'MP', 'WS', 'USG%', 'Age', 'BPM']].corr()['Salary'].drop('Salary').sort_values()
+salary_corr.plot(kind='barh', ax=ax, color='#2563eb')
+ax.set_title('Correlação com salário', fontsize=15, fontweight='bold')
+ax.set_xlabel('Correlação de Pearson', fontsize=12)
+ax.tick_params(axis='both', labelsize=11)
+ax.grid(axis='x', alpha=0.25)
+
+ax = axes[1, 0]
+ax.scatter(df_raw['Age'], df_raw['Salary'] / 1e6, alpha=0.55, s=22, c='#f97316', edgecolors='none')
+ax.set_title('Salário por idade', fontsize=15, fontweight='bold')
+ax.set_xlabel('Idade', fontsize=12)
+ax.set_ylabel('Salário (US$ milhões)', fontsize=12)
+ax.tick_params(axis='both', labelsize=11)
+ax.grid(True, alpha=0.25)
+
+ax = axes[1, 1]
+pos_sal = df_raw.groupby('Position_Clean')['Salary'].mean().sort_values(ascending=False) / 1e6
+pos_sal.plot(kind='bar', ax=ax, color='#14b8a6')
+ax.set_title('Salário médio por posição', fontsize=15, fontweight='bold')
+ax.set_xlabel('Posição', fontsize=12)
+ax.set_ylabel('Salário médio (US$ milhões)', fontsize=12)
+ax.tick_params(axis='both', labelsize=11, rotation=0)
+ax.grid(axis='y', alpha=0.25)
+
+fig.suptitle('Análise exploratória dos salários da NBA', fontsize=18, fontweight='bold')
+plt.tight_layout(rect=[0, 0, 1, 0.95])
+plt.savefig(REPORT_FIG_DIR / 'eda_relatorio.pdf', bbox_inches='tight')
+plt.savefig(REPORT_FIG_DIR / 'eda_relatorio.png', dpi=300, bbox_inches='tight')
+plt.close()
 
 # Histograma salarial (export para apresentação)
 _sal_edges = [0, 1e6, 2e6, 3e6, 5e6, 8e6, 12e6, 18e6, 25e6, 35e6, 50e6]
@@ -491,6 +564,35 @@ plt.tight_layout()
 plt.savefig(DIR_INTERP / 'importancia_permutacao' / 'importancia.png', dpi=300)
 plt.close()
 
+# Figura para o relatório: somente variáveis relevantes + grupo agregado.
+imp_report = imp_df.copy()
+imp_report['Importancia_pos'] = imp_report['Importancia'].clip(lower=0)
+top_imp = imp_report.head(9).copy()
+rest_imp = imp_report.iloc[9:]
+if len(rest_imp) > 0:
+    outros = pd.DataFrame([{
+        'Feature': f'Outras variáveis ({len(rest_imp)})',
+        'Importancia': rest_imp['Importancia_pos'].sum(),
+        'Desvio': 0.0,
+        'Importancia_pos': rest_imp['Importancia_pos'].sum(),
+    }])
+    top_imp = pd.concat([top_imp, outros], ignore_index=True)
+top_imp['Feature_plot'] = top_imp['Feature'].map(_report_label)
+top_imp = top_imp.sort_values('Importancia_pos')
+fig, ax = plt.subplots(figsize=(8.8, 6.2))
+colors = ['#8b5cf6' if 'Outras' not in f else '#94a3b8' for f in top_imp['Feature']]
+ax.barh(top_imp['Feature_plot'], top_imp['Importancia_pos'], color=colors)
+ax.set_title('Importância por permutação (HGB)', fontsize=16, fontweight='bold')
+ax.set_xlabel('Queda no $R^2$ ao permutar a variável', fontsize=13)
+ax.tick_params(axis='both', labelsize=12)
+ax.grid(axis='x', alpha=0.25)
+for spine in ['top', 'right', 'left']:
+    ax.spines[spine].set_visible(False)
+plt.tight_layout()
+plt.savefig(REPORT_FIG_DIR / 'importancia_relatorio.pdf', bbox_inches='tight')
+plt.savefig(REPORT_FIG_DIR / 'importancia_relatorio.png', dpi=300, bbox_inches='tight')
+plt.close()
+
 # PDP (top 6 features)
 top6 = imp_df.head(6)['Feature'].tolist()
 fig, axes = plt.subplots(2, 3, figsize=(15, 10))
@@ -506,6 +608,27 @@ for ax, feat in zip(axes, top6):
 fig.suptitle(f'PDP - {best_tree_name}', fontsize=14, fontweight='bold')
 plt.tight_layout(rect=[0, 0, 1, 0.95])
 plt.savefig(DIR_INTERP / 'graficos_pdp' / 'pdp_modelo.png', dpi=300)
+plt.close()
+
+# Figura para relatório: PDPs principais, com fonte maior.
+pdp_features = [f for f in ['MP', 'Age', 'PTS_per_GP', 'USG%'] if f in feature_names]
+fig, axes = plt.subplots(2, 2, figsize=(11, 7.6))
+axes = axes.flatten()
+for ax, feat in zip(axes, pdp_features):
+    fi = feature_names.index(feat)
+    pd_res = partial_dependence(tree_model, X_test_proc_best, features=[fi], kind='average', grid_resolution=60)
+    ax.plot(pd_res['grid_values'][0], pd_res['average'][0], color='#ef4444', lw=3)
+    ax.set_title(_report_label(feat), fontsize=14, fontweight='bold')
+    ax.set_xlabel(_report_label(feat), fontsize=12)
+    ax.set_ylabel('Efeito parcial no log(salário)', fontsize=12)
+    ax.tick_params(axis='both', labelsize=11)
+    ax.grid(True, alpha=0.28)
+for ax in axes[len(pdp_features):]:
+    ax.axis('off')
+fig.suptitle('Efeitos parciais (PDP) do HGB', fontsize=17, fontweight='bold')
+plt.tight_layout(rect=[0, 0, 1, 0.94])
+plt.savefig(REPORT_FIG_DIR / 'pdp_relatorio.pdf', bbox_inches='tight')
+plt.savefig(REPORT_FIG_DIR / 'pdp_relatorio.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 # SHAP
@@ -549,6 +672,57 @@ try:
     plt.title(f'SHAP Global - {modelo_shap}', fontweight='bold')
     plt.tight_layout()
     plt.savefig(DIR_INTERP / 'shap_values' / 'shap_importancia_global.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
+    # Figuras para relatório: cortar variáveis próximas de zero e agregar o restante.
+    X_test_dense = X_test_shap.toarray() if hasattr(X_test_shap, 'toarray') else np.asarray(X_test_shap)
+    mean_abs_shap = np.abs(sv_plot).mean(axis=0)
+    shap_order = np.argsort(mean_abs_shap)[::-1]
+    top_n_shap = 8
+    top_idx = shap_order[:top_n_shap]
+    rest_idx = shap_order[top_n_shap:]
+    top_names = [_report_label(feature_names[i]) for i in top_idx]
+
+    shap.summary_plot(
+        sv_plot[:, top_idx],
+        X_test_dense[:, top_idx],
+        feature_names=top_names,
+        show=False,
+        plot_size=(9.5, 6.2),
+        max_display=top_n_shap,
+    )
+    fig = plt.gcf()
+    if len(fig.axes) > 1:
+        color_axis = fig.axes[-1]
+        color_axis.set_ylabel('Valor da variável', fontsize=12)
+        color_axis.set_yticklabels(['Baixo', 'Alto'])
+    plt.title('Resumo SHAP - principais variáveis', fontsize=16, fontweight='bold')
+    plt.xlabel('Impacto na predição do log(salário)', fontsize=12)
+    plt.tight_layout()
+    plt.savefig(REPORT_FIG_DIR / 'shap_summary_relatorio.pdf', bbox_inches='tight')
+    plt.savefig(REPORT_FIG_DIR / 'shap_summary_relatorio.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
+    shap_bar_vals = list(mean_abs_shap[top_idx])
+    shap_bar_names = top_names.copy()
+    if len(rest_idx) > 0:
+        shap_bar_vals.append(float(mean_abs_shap[rest_idx].sum()))
+        shap_bar_names.append(f'Outras variáveis ({len(rest_idx)})')
+    order_bar = np.argsort(shap_bar_vals)
+    fig, ax = plt.subplots(figsize=(8.8, 6.0))
+    bar_vals = np.array(shap_bar_vals)[order_bar]
+    bar_names = np.array(shap_bar_names)[order_bar]
+    colors = ['#2563eb' if 'Outras' not in name else '#94a3b8' for name in bar_names]
+    ax.barh(bar_names, bar_vals, color=colors)
+    ax.set_title('Importância global SHAP', fontsize=16, fontweight='bold')
+    ax.set_xlabel('Média de |SHAP| no log(salário)', fontsize=13)
+    ax.tick_params(axis='both', labelsize=12)
+    ax.grid(axis='x', alpha=0.25)
+    for spine in ['top', 'right', 'left']:
+        ax.spines[spine].set_visible(False)
+    plt.tight_layout()
+    plt.savefig(REPORT_FIG_DIR / 'shap_global_relatorio.pdf', bbox_inches='tight')
+    plt.savefig(REPORT_FIG_DIR / 'shap_global_relatorio.png', dpi=300, bbox_inches='tight')
     plt.close()
 
     # Waterfall por perfil
@@ -626,6 +800,39 @@ try:
     )
     print("   shap_profiles.json exportado.")
 
+    if 'curry' in shap_profiles_export:
+        profile = shap_profiles_export['curry']
+        forces = profile['forces']
+        contrib = pd.DataFrame(forces)
+        contrib = contrib.sort_values('val')
+        fig, ax = plt.subplots(figsize=(9.8, 4.8))
+        colors = np.where(contrib['val'] >= 0, '#16a34a', '#dc2626')
+        ax.barh(contrib['name'], contrib['val'], color=colors, alpha=0.92)
+        ax.axvline(0, color='#111827', lw=1)
+        for y, val in enumerate(contrib['val']):
+            ha = 'left' if val >= 0 else 'right'
+            offset = 0.35 if val >= 0 else -0.35
+            ax.text(val + offset, y, f'{val:+.1f}M', va='center', ha=ha, fontsize=12, fontweight='bold')
+        ax.text(
+            0.99, 0.05,
+            f"Base: US$ {profile['baseVal']:.1f}M   |   Predito: US$ {profile['predVal']:.1f}M   |   Real: US$ {profile['realVal']:.1f}M",
+            transform=ax.transAxes,
+            ha='right',
+            va='bottom',
+            fontsize=11,
+            bbox=dict(boxstyle='round,pad=0.35', facecolor='white', edgecolor='#cbd5e1')
+        )
+        ax.set_xlabel('Contribuição na predição (US$ milhões)', fontsize=13)
+        ax.set_title('Contribuições SHAP locais - Stephen Curry', fontsize=16, fontweight='bold')
+        ax.tick_params(axis='both', labelsize=12)
+        ax.grid(axis='x', alpha=0.25)
+        for spine in ['top', 'right', 'left']:
+            ax.spines[spine].set_visible(False)
+        plt.tight_layout()
+        plt.savefig(REPORT_FIG_DIR / 'shap_curry_contribuicoes_relatorio.pdf', bbox_inches='tight')
+        plt.savefig(REPORT_FIG_DIR / 'shap_curry_contribuicoes_relatorio.png', dpi=300, bbox_inches='tight')
+        plt.close()
+
     topf = imp_df.iloc[0]['Feature']
     tfi = feature_names.index(topf)
     fig, ax = plt.subplots(figsize=(8, 5))
@@ -701,3 +908,17 @@ print(f"MAE global teste: ${erros.mean():,.0f}")
 
 print("\n=== Concluído ===")
 print(f"Artefatos em {DIR_EDA.name}/, {DIR_PREPROC.name}/, {DIR_MODEL.name}/, {DIR_INTERP.name}/")
+
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
+for report_name in [
+    'eda_relatorio.pdf',
+    'importancia_relatorio.pdf',
+    'pdp_relatorio.pdf',
+    'shap_summary_relatorio.pdf',
+    'shap_global_relatorio.pdf',
+    'shap_curry_contribuicoes_relatorio.pdf',
+]:
+    src = REPORT_FIG_DIR / report_name
+    if src.exists():
+        shutil.copy2(src, REPORT_DIR / report_name)
+print(f"Figuras do relatório copiadas para {REPORT_DIR.relative_to(REPO_ROOT)}/")
